@@ -1,0 +1,71 @@
+/* FXたより 法務ページ 共通スタイル
+   ★アプリ内のリンクから開かれるため、スマートフォンでの可読性を最優先にする。
+   外部のCSSやフォントを読み込まない（表示が遅れる／読み込めない環境があるため）。*/
+:root {
+  --text: #1a1a1a;
+  --muted: #666;
+  --line: #e2e2e2;
+  --accent: #16437a;
+  --bg: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e8e8e8;
+    --muted: #a0a0a0;
+    --line: #333;
+    --accent: #7fb0e8;
+    --bg: #141414;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 24px 20px 64px;
+  max-width: 720px;
+  margin-inline: auto;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.9;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+header { border-bottom: 2px solid var(--accent); padding-bottom: 12px; margin-bottom: 28px; }
+header .app { font-size: 13px; color: var(--muted); letter-spacing: .04em; }
+h1 { font-size: 22px; margin: 4px 0 0; }
+h2 {
+  font-size: 17px;
+  margin: 36px 0 12px;
+  padding-left: 10px;
+  border-left: 4px solid var(--accent);
+}
+h3 { font-size: 15px; margin: 24px 0 8px; }
+p, li { font-size: 15px; }
+ol, ul { padding-left: 1.4em; }
+li { margin-bottom: 6px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+}
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: rgba(127,127,127,.08); font-weight: 600; white-space: nowrap; }
+a { color: var(--accent); }
+.note {
+  background: rgba(127,127,127,.08);
+  border-left: 3px solid var(--muted);
+  padding: 12px 14px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+footer {
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+footer a { margin-right: 16px; }
