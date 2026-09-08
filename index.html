@@ -12,7 +12,10 @@
       ※このファイル自体を同じ一覧で grep して検査できるよう、
         コメント内にも禁止語そのものは書かないこと。
     ・金融商品取引法上の投資助言と受け取られる表現（推奨・見通し・煽り）を使わない。
-    ・事業者表示は屋号「FXたより」のみ（2026-09-06 本人決定）。実名は出さない。
+    ・事業者表示は屋号「IKD Studio」（2026-09-08 本人決定）。
+      Google Play のデベロッパー名が既に IKD Studio であり、そちらに統一した。
+      「FXたより」はアプリ名であって事業者名ではない。混同しないこと。
+      実名（Apple の販売者名として公開される）はサイトには出さない。
 
   【公開手順】
     このファイルを output/legal/site/index.html として置き換え、
@@ -23,7 +26,8 @@
   【公開前に差し替えるもの】
     ・ストア配信開始後、「配信準備中」のブロックを実際のリンクに差し替える。
       該当箇所は 2 か所。「▼STORE▼」で検索すること。
-    ・事業者名・連絡先は apply_operator.py と同じ値を直書きしている。
+    ・事業者名・連絡先は直書き。apply_operator.py では更新されないので、
+      屋号を変えるときはこのファイルも直すこと（2026-09-08 に実際に漏れた）。
       屋号を変える場合は apply_operator.py を通したあと、このファイルも確認すること。
 -->
 <html lang="ja">
@@ -751,7 +755,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     </div>
 
     <div class="legal">
-      <p>事業者：FXたより　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
+      <p>事業者：IKD Studio　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
       <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
       <p>App Store は Apple Inc. の、Google Play は Google LLC の商標です。</p>
     </div>
