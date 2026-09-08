@@ -1,50 +1,762 @@
 <!DOCTYPE html>
+<!--
+  FXたより ランディングページ（刷新案 / 2026-09-08）
+
+  【設計の前提】
+    ・GitHub Pages（静的・月0円）で完結する。外部CSS・外部フォント・外部JSを一切読み込まない。
+      アプリ内のリンクからも開かれるため、回線が細い場所でも1往復で表示が終わる形にしている。
+    ・画像ファイルを持たない。ロゴは inline SVG で描いている（tool/make_icon.py と同じ座標）。
+    ・景品表示法5条1号（合理的根拠のない優良誤認）を避けるため、
+      速さの順位づけや「一番である」類の表現は一切使わない。
+      禁止語の実体は fx_tayori/test/widget_test.dart に一覧がある。
+      ※このファイル自体を同じ一覧で grep して検査できるよう、
+        コメント内にも禁止語そのものは書かないこと。
+    ・金融商品取引法上の投資助言と受け取られる表現（推奨・見通し・煽り）を使わない。
+    ・事業者表示は屋号「FXたより」のみ（2026-09-06 本人決定）。実名は出さない。
+
+  【公開手順】
+    このファイルを output/legal/site/index.html として置き換え、
+    https://github.com/kainan0880jwr/fxtayori.git に push する。
+    style.css は privacy.html / terms.html が引き続き使うので消さないこと。
+    （このページは style.css に依存しない＝自己完結）
+
+  【公開前に差し替えるもの】
+    ・ストア配信開始後、「配信準備中」のブロックを実際のリンクに差し替える。
+      該当箇所は 2 か所。「▼STORE▼」で検索すること。
+    ・事業者名・連絡先は apply_operator.py と同じ値を直書きしている。
+      屋号を変える場合は apply_operator.py を通したあと、このファイルも確認すること。
+-->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FXたより</title>
-<link rel="stylesheet" href="style.css">
+<title>FXたより — 中央銀行・政府機関の発表を直接監視して通知</title>
+<meta name="description" content="日本銀行・財務省・金融庁・FRB・ECBなど12のソースを直接監視し、為替に影響しうる公表があったことをお知らせするiOS / Androidアプリです。報道機関の記事本文は扱いません。">
+<meta name="theme-color" content="#0b1e3d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FXたより">
+<meta property="og:title" content="FXたより — 記事になる前の、発表そのもの。">
+<meta property="og:description" content="中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。">
+<meta property="og:url" content="https://kainan0880jwr.github.io/fxtayori/">
+<meta name="twitter:card" content="summary_large_image">
+<!-- OGP画像は 1200x630 の og.png を用意してから有効化する（tool/make_icon.py に追記予定）
+<meta property="og:image" content="https://kainan0880jwr.github.io/fxtayori/og.png"> -->
+<link rel="canonical" href="https://kainan0880jwr.github.io/fxtayori/">
+<!-- ファビコンも外部ファイルを持たない -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2a52'/%3E%3Cpath d='M13 71 27 61 39 67 51 51 60 57 70.5 33.5' fill='none' stroke='%23fff' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70.5' cy='33.5' r='13' fill='%23ffb340'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   1. 設計トークン
+   ------------------------------------------------------------
+   紺（アイコン由来）を主役、橙を1点だけのアクセントにする。
+   橙は「新着がある」ことの色なので、装飾には使わない。
+   ============================================================ */
+:root{
+  --navy-900:#0b1e3d;   /* アイコンのグラデ上端 */
+  --navy-700:#18427a;   /* アイコンのグラデ下端 */
+  --navy-600:#16437a;   /* 既存 style.css の --accent と同値 */
+  --amber:#ffb340;      /* アイコンの光点 */
+  --amber-ink:#8a5000;  /* 白地で橙を文字色に使うときのコントラスト確保用 */
+
+  --bg:#ffffff;
+  --surface:#f4f7fb;
+  --surface-2:#eaf0f8;
+  --text:#101722;
+  --muted:#586377;
+  --line:#dde5ef;
+  --link:var(--navy-600);
+  --radius:14px;
+  --maxw:960px;
+  --shadow:0 1px 2px rgba(11,30,61,.06), 0 8px 24px rgba(11,30,61,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0a1424;
+    --surface:#101f36;
+    --surface-2:#16294a;
+    --text:#e7edf6;
+    --muted:#9dabc2;
+    --line:#1f3559;
+    --link:#8fbcf0;
+    --amber-ink:var(--amber);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size:16px;
+  line-height:1.85;
+  /* 日本語は約物のアキが空きすぎるため、句読点まわりだけ詰める */
+  font-feature-settings:"palt" 1;
+}
+img,svg{max-width:100%}
+a{color:var(--link); text-underline-offset:.2em}
+a:focus-visible,button:focus-visible{outline:3px solid var(--amber); outline-offset:3px; border-radius:4px}
+
+.wrap{max-width:var(--maxw); margin-inline:auto; padding-inline:20px}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.skip{position:absolute; left:-9999px}
+.skip:focus{left:12px; top:12px; z-index:99; background:#fff; color:#0b1e3d; padding:10px 14px; border-radius:8px}
+
+/* ============================================================
+   2. ヘッダー
+   ============================================================ */
+.site-header{
+  position:sticky; top:0; z-index:20;
+  background:var(--bg); /* color-mix 非対応ブラウザ向けのフォールバック */
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid var(--line);
+}
+@supports not (backdrop-filter: blur(1px)){ .site-header{background:var(--bg)} }
+.site-header .wrap{display:flex; align-items:center; gap:12px; height:56px}
+.brand{display:flex; align-items:center; gap:9px; text-decoration:none; color:inherit; font-weight:700; letter-spacing:.01em}
+.brand svg{width:28px; height:28px; border-radius:7px; display:block}
+.site-header nav{margin-left:auto; display:flex; gap:18px; font-size:14px}
+.site-header nav a{color:var(--muted); text-decoration:none}
+.site-header nav a:hover{color:var(--text); text-decoration:underline}
+@media (max-width:640px){ .site-header nav a.hide-sp{display:none} }
+
+/* ============================================================
+   3. ヒーロー
+   ------------------------------------------------------------
+   ★ライト／ダークどちらでも紺のままにする。
+     ブランドの面を配色設定に明け渡さないため。
+   ============================================================ */
+.hero{
+  background:linear-gradient(168deg, var(--navy-900) 0%, var(--navy-700) 100%);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+/* 背景の波紋。アイコンの同心円と同じモチーフを面で反復する */
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background:repeating-radial-gradient(circle at 82% 18%, rgba(255,179,64,.13) 0 1px, transparent 1px 62px);
+  pointer-events:none;
+}
+.hero .wrap{position:relative; padding:56px 20px 60px}
+.eyebrow{
+  display:inline-block; font-size:12px; letter-spacing:.12em; font-weight:600;
+  color:#cfe0f7; border:1px solid rgba(255,255,255,.28);
+  padding:4px 11px; border-radius:999px; margin:0 0 20px;
+}
+.hero h1{
+  font-size:clamp(30px, 8vw, 50px);
+  line-height:1.28; margin:0 0 18px; letter-spacing:-.01em; font-weight:800;
+}
+.hero h1 .amber{color:var(--amber)}
+.hero .lead{font-size:clamp(15px,3.6vw,17px); line-height:1.9; color:#dbe6f5; margin:0 0 24px; max-width:34em}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px; padding:0; list-style:none}
+.chips li{
+  font-size:13px; font-weight:600; color:#eaf2ff;
+  background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16);
+  padding:6px 12px; border-radius:999px;
+}
+.chips li b{color:var(--amber); font-size:15px; margin-right:2px}
+
+.hero-grid{display:grid; gap:36px; align-items:center}
+@media (min-width:860px){ .hero-grid{grid-template-columns:1.15fr .85fr; gap:44px} }
+
+/* ストア導線 */
+.cta{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:15px; font-weight:700; text-decoration:none;
+  padding:13px 22px; border-radius:11px; border:1px solid transparent;
+}
+.btn-primary{background:var(--amber); color:#3a2200}
+.btn-primary:hover{background:#ffc266}
+.btn-ghost{background:transparent; color:#fff; border-color:rgba(255,255,255,.34)}
+.btn-ghost:hover{background:rgba(255,255,255,.10)}
+.btn[aria-disabled="true"]{opacity:.55; cursor:default; pointer-events:none}
+.cta-note{font-size:12.5px; color:#b9c9e0; margin:14px 0 0}
+
+/* 通知の表示イメージ（実装済みの要素だけで描く。架空の画面は描かない） */
+.mock{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:20px; padding:16px;
+}
+.mock-caption{font-size:11.5px; color:#a9bcd6; text-align:center; margin:10px 0 0}
+.notif{
+  background:rgba(255,255,255,.96); color:#101722;
+  border-radius:13px; padding:12px 14px; margin-bottom:9px;
+  display:flex; gap:11px; align-items:flex-start;
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.notif:last-of-type{margin-bottom:0; opacity:.62}
+.notif .ic{flex:0 0 auto; width:32px; height:32px; border-radius:8px}
+.notif .body{min-width:0}
+.notif .top{display:flex; gap:6px; align-items:center; font-size:11px; color:#5b6577; margin-bottom:2px}
+.notif .lvl{
+  background:#fdeccd; color:#7a4a00; font-weight:700;
+  padding:1px 7px; border-radius:5px; font-size:10.5px; letter-spacing:.02em;
+}
+.notif .title{font-size:13.5px; font-weight:700; line-height:1.55; margin:0}
+.notif .sub{font-size:11.5px; color:#5b6577; margin:3px 0 0; line-height:1.6}
+/* ★アニメーションは入れない。
+   「危機感を煽る演出はしません」と書いているページ自体が動き回るのは矛盾する。
+   波紋は背景の同心円（.hero::before）で静止したまま表現する。 */
+
+/* ============================================================
+   4. セクション共通
+   ============================================================ */
+section{padding:64px 0}
+section + section{border-top:1px solid var(--line)}
+.section-alt{background:var(--surface)}
+h2{
+  font-size:clamp(21px,5vw,29px); line-height:1.45; margin:0 0 12px;
+  letter-spacing:-.005em; font-weight:800;
+}
+.sec-lead{color:var(--muted); font-size:15.5px; margin:0 0 32px; max-width:40em}
+h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
+
+.grid{display:grid; gap:14px}
+@media (min-width:720px){ .cols-2{grid-template-columns:1fr 1fr} }
+@media (min-width:720px){ .cols-3{grid-template-columns:repeat(3,1fr)} }
+.card{
+  background:var(--bg); border:1px solid var(--line);
+  border-radius:var(--radius); padding:20px 20px 22px; box-shadow:var(--shadow);
+}
+.section-alt .card{background:var(--bg)}
+.card p{margin:0; font-size:14.5px; color:var(--muted); line-height:1.85}
+.card .tag{
+  display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em;
+  color:var(--amber-ink); margin:0 0 8px;
+}
+
+/* 監視ソース一覧 */
+.sources{display:grid; gap:20px}
+@media (min-width:720px){ .sources{grid-template-columns:repeat(2,1fr); gap:20px 32px} }
+.src-group h3{
+  font-size:12.5px; letter-spacing:.1em; color:var(--muted);
+  border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:11px; font-weight:700;
+}
+.src-group ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:7px}
+.src-group li{
+  font-size:13.5px; font-weight:600;
+  background:var(--surface-2); border:1px solid var(--line);
+  padding:6px 12px; border-radius:8px; white-space:nowrap;
+}
+.section-alt .src-group li{background:var(--bg)}
+
+/* 仕組みの3段 */
+.steps{counter-reset:s; display:grid; gap:14px}
+@media (min-width:820px){ .steps{grid-template-columns:repeat(3,1fr)} }
+.step{
+  position:relative; background:var(--bg); border:1px solid var(--line);
+  border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow);
+}
+.step::before{
+  counter-increment:s; content:counter(s);
+  display:flex; align-items:center; justify-content:center;
+  width:30px; height:30px; border-radius:9px;
+  background:var(--navy-600); color:#fff; font-weight:800; font-size:15px;
+  margin-bottom:12px;
+}
+@media (prefers-color-scheme: dark){ .step::before{background:var(--navy-700)} }
+.step p{margin:0; font-size:14.5px; color:var(--muted)}
+
+/* 数字の面（為替介入） */
+.stats{display:grid; gap:12px; margin:0 0 24px}
+@media (min-width:560px){ .stats{grid-template-columns:repeat(3,1fr)} }
+.stat{
+  background:linear-gradient(168deg, var(--navy-900), var(--navy-700));
+  color:#fff; border-radius:var(--radius); padding:20px; text-align:center;
+}
+.stat b{display:block; font-size:clamp(28px,7vw,38px); line-height:1.15; font-weight:800; color:var(--amber)}
+.stat span{display:block; font-size:12.5px; color:#c6d6ec; margin-top:5px}
+
+/* 「しないこと」 */
+.nots{list-style:none; margin:0; padding:0; display:grid; gap:12px}
+@media (min-width:720px){ .nots{grid-template-columns:1fr 1fr} }
+.nots li{
+  background:var(--bg); border:1px solid var(--line); border-left:4px solid var(--navy-600);
+  border-radius:10px; padding:16px 18px;
+}
+@media (prefers-color-scheme: dark){ .nots li{border-left-color:var(--link)} }
+.nots b{display:block; font-size:15.5px; margin-bottom:4px}
+.nots span{font-size:14px; color:var(--muted); line-height:1.8}
+
+/* 正直に書いておくこと */
+.honest{list-style:none; margin:0; padding:0}
+.honest li{
+  font-size:14.5px; color:var(--muted); line-height:1.85;
+  padding:14px 0 14px 26px; border-bottom:1px solid var(--line); position:relative;
+}
+.honest li:last-child{border-bottom:0}
+.honest li::before{
+  content:""; position:absolute; left:6px; top:23px;
+  width:7px; height:7px; border-radius:50%; background:var(--muted);
+}
+
+/* FAQ */
+.faq details{
+  border:1px solid var(--line); border-radius:11px;
+  background:var(--bg); margin-bottom:10px; overflow:hidden;
+}
+.faq summary{
+  cursor:pointer; list-style:none; padding:16px 46px 16px 18px;
+  font-weight:700; font-size:15px; position:relative;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+"; position:absolute; right:18px; top:50%; transform:translateY(-50%);
+  font-size:20px; font-weight:400; color:var(--muted); line-height:1;
+}
+.faq details[open] summary::after{content:"−"}
+.faq .a{padding:0 18px 18px; font-size:14.5px; color:var(--muted); margin:0; line-height:1.9}
+.faq .a p{margin:0 0 8px}
+.faq .a p:last-child{margin:0}
+
+/* 末尾CTA */
+.closing{
+  background:linear-gradient(168deg, var(--navy-900), var(--navy-700));
+  color:#fff; text-align:center; border-top:0;
+}
+.closing h2{color:#fff}
+.closing p{color:#d3e0f2; max-width:34em; margin-inline:auto}
+.closing .cta{justify-content:center}
+
+/* 免責 */
+.disclaimer{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); padding:18px 20px; font-size:13.5px;
+  color:var(--muted); line-height:1.9; margin:0 0 32px;
+}
+.disclaimer b{color:var(--text)}
+
+/* フッター */
+footer{background:var(--surface); border-top:1px solid var(--line); padding:44px 0 56px}
+footer .cols{display:grid; gap:26px; margin-bottom:28px}
+@media (min-width:720px){ footer .cols{grid-template-columns:1.4fr 1fr 1fr} }
+footer h3{font-size:12.5px; letter-spacing:.1em; color:var(--muted); margin-bottom:9px}
+footer ul{list-style:none; margin:0; padding:0}
+footer li{margin-bottom:7px; font-size:14px}
+footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:26em}
+.legal{border-top:1px solid var(--line); padding-top:20px; font-size:12.5px; color:var(--muted)}
+.legal p{margin:0 0 6px}
+</style>
 </head>
 <body>
-<header>
-  <div class="app">iOS / Android アプリ</div>
-  <h1>FXたより</h1>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<!-- アイコンの図形は1度だけ定義して使い回す（tool/make_icon.py と同じ座標系） -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1e3d"/><stop offset="1" stop-color="#18427a"/>
+    </linearGradient>
+    <symbol id="mark" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="url(#g)"/>
+      <g fill="none" stroke="#ffb340">
+        <circle cx="70.5" cy="33.5" r="25.5" stroke-width=".8" opacity=".17"/>
+        <circle cx="70.5" cy="33.5" r="19"   stroke-width=".8" opacity=".24"/>
+        <circle cx="70.5" cy="33.5" r="13"   stroke-width=".8" opacity=".35"/>
+      </g>
+      <path d="M13 71 27 61 39 67 51 51 60 57 70.5 33.5" fill="none" stroke="#fff"
+            stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="70.5" cy="33.5" r="7.2" fill="#ffb340"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
+      <span>FXたより</span>
+    </a>
+    <nav aria-label="ページ内">
+      <a href="#sources">監視ソース</a>
+      <a href="#features" class="hide-sp">できること</a>
+      <a href="#not" class="hide-sp">しないこと</a>
+      <a href="#faq">よくある質問</a>
+    </nav>
+  </div>
 </header>
 
-<p>中央銀行・政府機関の発表を直接監視して、為替に影響しうる公表があったことをお知らせするアプリです。</p>
+<main id="main">
+<div id="top"></div>
 
-<h2>お届けするもの</h2>
-<ul>
-  <li>日本銀行・財務省・金融庁・FRB・ECB・イングランド銀行・カナダ銀行・オーストラリア準備銀行などの公式発表</li>
-  <li>公表があった事実と、原文へのリンク</li>
-  <li>金融政策決定会合など、公式に日程が公表されている経済指標のカレンダー</li>
-</ul>
+<!-- ============================================================
+     ヒーロー
+     ★最初の1画面で「何のアプリか」を確定させる。
+       旧LPはh1が「FXたより」だけで、読まないと分からなかった。
+     ============================================================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">iOS / Android アプリ</p>
+        <h1>記事になる前の、<br><span class="amber">発表そのもの</span>。</h1>
+        <p class="lead">
+          中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。
+          届くのは、公表があった事実と原文へのリンクだけです。
+        </p>
+        <ul class="chips">
+          <li><b>12</b>の監視ソース</li>
+          <li>日本の当局を<b>3</b>機関</li>
+          <li>為替介入の記録<b>386</b>件</li>
+        </ul>
 
-<h2>お届けしないもの</h2>
-<ul>
-  <li>報道機関の記事本文（著作権のため掲載しません）</li>
-  <li>売買の推奨や相場の見通し（投資助言ではありません）</li>
-</ul>
+        <!-- ▼STORE▼ 配信開始後、この div の中身をストアリンクに差し替える -->
+        <div class="cta">
+          <span class="btn btn-primary" aria-disabled="true">App Store（配信準備中）</span>
+          <span class="btn btn-primary" aria-disabled="true">Google Play（配信準備中）</span>
+          <a class="btn btn-ghost" href="#features">できることを見る</a>
+        </div>
+        <!-- ▲STORE▲ -->
 
-<div class="note">
-本アプリは情報提供のみを目的としており、投資の勧誘・助言を行うものではありません。
-取引に関する判断は、必ずご自身の責任で行ってください。
-また、本アプリは各発表機関とは一切関係がなく、公式アプリではありません。
-</div>
+        <p class="cta-note">情報提供のみ／投資助言ではありません。無料でご利用いただけます。</p>
+      </div>
 
-<h2>各種文書</h2>
-<ul>
-  <li><a href="privacy.html">プライバシーポリシー</a></li>
-  <li><a href="terms.html">利用規約</a></li>
-</ul>
+      <div>
+        <div class="mock" role="img"
+             aria-label="通知の表示イメージ。日本銀行の公表を重要度「高」として知らせる通知と、財務省の公表を知らせる通知が並んでいます。">
+          <div class="notif">
+            <svg class="ic" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
+            <div class="body">
+              <div class="top"><span class="lvl">重要度 高</span><span>日本銀行</span><span>・ 12:03</span></div>
+              <p class="title">金融政策決定会合に関する公表がありました</p>
+              <p class="sub">USD/JPY・EUR/JPY に関係します　原文を開く →</p>
+            </div>
+          </div>
+          <div class="notif">
+            <svg class="ic" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
+            <div class="body">
+              <div class="top"><span class="lvl">重要度 中</span><span>財務省</span><span>・ 19:00</span></div>
+              <p class="title">外国為替平衡操作の実施状況に関する公表がありました</p>
+              <p class="sub">USD/JPY に関係します　原文を開く →</p>
+            </div>
+          </div>
+        </div>
+        <p class="mock-caption">表示イメージです。見出しは当アプリが独自に付与した分類ラベルで、発表機関の文章ではありません。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h2>お問い合わせ</h2>
-<p><a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
-<p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
+<!-- ============================================================
+     監視ソース
+     ★機能より先にソースを見せる。一次情報アプリではソースが仕様そのもので、
+       「何を見ているか」が分かった時点で説得はほぼ終わる。
+     ============================================================ -->
+<section id="sources" class="section-alt">
+  <div class="wrap">
+    <h2>見ているのは、当局の公式サイトそのもの</h2>
+    <p class="sec-lead">
+      12のフィードを直接監視しています。日本の3機関が入っているところが、海外発のサービスとの違いです。
+    </p>
+
+    <div class="sources">
+      <div class="src-group">
+        <h3>日本</h3>
+        <ul>
+          <li>日本銀行</li>
+          <li>財務省</li>
+          <li>金融庁</li>
+        </ul>
+      </div>
+      <div class="src-group">
+        <h3>米国</h3>
+        <ul>
+          <li>FRB 報道発表</li>
+          <li>FRB 講演</li>
+          <li>FRB 議会証言</li>
+        </ul>
+      </div>
+      <div class="src-group">
+        <h3>欧州・英国</h3>
+        <ul>
+          <li>欧州中央銀行（ECB）</li>
+          <li>イングランド銀行 発表</li>
+          <li>イングランド銀行 講演</li>
+        </ul>
+      </div>
+      <div class="src-group">
+        <h3>オセアニア・カナダ</h3>
+        <ul>
+          <li>カナダ銀行</li>
+          <li>オーストラリア準備銀行</li>
+          <li>ニュージーランド準備銀行</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="sec-lead" style="margin:28px 0 0; font-size:13.5px">
+      本アプリは各発表機関とは一切関係がなく、公式アプリ・公式サービスではありません。
+      各機関のロゴや紋章は使用していません。
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     仕組み
+     ★「速い」と言えない（景表法）ので、経路を見せて読み手に判断してもらう。
+       最上級表現を使わずに速度の話をする唯一の方法。
+     ============================================================ -->
+<section id="how">
+  <div class="wrap">
+    <h2>記事を待たない、という設計</h2>
+    <p class="sec-lead">
+      報道記事は、記者が発表を読んでから書かれます。本アプリは発表そのものを見ているので、間に人の作業が入りません。
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>公式サイトを直接見る</h3>
+        <p>各国の中央銀行・政府機関が自分で出しているページとフィードを、定期的に確認します。ニュース配信会社は経由しません。</p>
+      </div>
+      <div class="step">
+        <h3>為替に関わるものだけ選ぶ</h3>
+        <p>関係する通貨と重要度を機械的に判定し、あなたが監視している通貨ペアに関わる公表だけを残します。</p>
+      </div>
+      <div class="step">
+        <h3>公表があったことを知らせる</h3>
+        <p>分類ラベルと発表元、原文へのリンクを通知します。内容の解釈や見通しは付けません。</p>
+      </div>
+    </div>
+
+    <div class="disclaimer" style="margin:24px 0 0">
+      通知の即時性・確実性を保証するものではありません。公表元の配信状況、通信環境、端末やOSの設定、
+      プッシュ通知基盤の状況により、遅延したり届かなかったりすることがあります。
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     できること
+     ★仕組みを理解した後に機能を置く。先に機能を並べると、
+       「よくあるニュースアプリ」に見えて差が消える。
+     ============================================================ -->
+<section id="features" class="section-alt">
+  <div class="wrap">
+    <h2>できること</h2>
+    <p class="sec-lead">通知が主役ですが、届いた後に確かめる場所も用意しています。</p>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <p class="tag">ニュース一覧</p>
+        <h3>届いたものを、条件で絞って見る</h3>
+        <p>重要度・発表元・監視している通貨ペアで絞り込めます。先頭には「次の山場」として、これから予定されている重要な発表までの残り時間が出ます。</p>
+      </div>
+      <div class="card">
+        <p class="tag">経済指標カレンダー</p>
+        <h3>公式に日程が出ているものだけ</h3>
+        <p>金融政策決定会合・FOMCなどの日程と、米国の消費者物価指数・失業率・非農業部門雇用者数の実績値を掲載しています（出典：米国労働統計局）。慣例からの推定は「暫定」と表示します。</p>
+      </div>
+      <div class="card">
+        <p class="tag">為替介入トラッカー</p>
+        <h3>財務省が公表した実績を、そのまま</h3>
+        <p>実施日・金額・通貨ペアを、事実だけで並べています。1991年からの記録を1画面でさかのぼれます。</p>
+      </div>
+      <div class="card">
+        <p class="tag">通知の設定</p>
+        <h3>鳴りすぎないようにする</h3>
+        <p>監視する通貨ペア（10ペア）、通知しきい値、深夜に通知を止める「おやすみモード」、重要な指標の30分前・5分前に届く発表前アラート、届くか確かめるテスト通知。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     為替介入トラッカー
+     ★独立させる。他に無いものは、機能一覧の1マスに埋めると勿体ない。
+       数字が説得の主役なので、文より先に数字を置く。
+     ============================================================ -->
+<section id="intervention">
+  <div class="wrap">
+    <h2>為替介入の記録を、そのまま一覧に</h2>
+    <p class="sec-lead">財務省が公表している外国為替平衡操作の実績を、加工せずに並べています。</p>
+
+    <div class="stats">
+      <div class="stat"><b>386</b><span>公表されている実績の件数</span></div>
+      <div class="stat"><b>1991年</b><span>さかのぼれる最初の年</span></div>
+      <div class="stat"><b>122兆円</b><span>記録されている累計額</span></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <p class="tag">載せるもの</p>
+        <h3>実施日・金額・通貨ペア</h3>
+        <p>財務省が公表した事実だけです。数字の単位は億円と兆円で読みやすく整えていますが、値そのものは変えていません。</p>
+      </div>
+      <div class="card">
+        <p class="tag">載せないもの</p>
+        <h3>「前回から何日」「そろそろか」</h3>
+        <p>経過日数は事実ではありますが、投資判断を促す読み方を誘発するため、意図的に出していません。日付は画面に出ているので、必要な方はご自身でご確認ください。</p>
+      </div>
+    </div>
+
+    <p class="sec-lead" style="margin:20px 0 0; font-size:13.5px">出典：財務省「外国為替平衡操作の実施状況」（政府標準利用規約 第2.0版）</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     しないこと
+     ★価値を理解した後に置く。冒頭に置くと単なる機能不足に読めるが、
+       ここに置くと設計思想として読める。旧LPはここが2番目にあった。
+     ============================================================ -->
+<section id="not" class="section-alt">
+  <div class="wrap">
+    <h2>しないこと</h2>
+    <p class="sec-lead">できないのではなく、しないと決めていることです。</p>
+
+    <ul class="nots">
+      <li>
+        <b>報道機関の記事本文は載せません</b>
+        <span>著作権のためです。届く見出しは、当アプリが公表内容から独自に付与した分類ラベルであり、発表機関や報道機関の文章ではありません。内容は必ず原文でご確認ください。</span>
+      </li>
+      <li>
+        <b>売買の推奨や相場の見通しは示しません</b>
+        <span>金融商品取引法上の投資助言・投資勧誘を行うものではありません。相場が上がるか下がるか、買うべきか売るべきかといった判断は一切表示しません。</span>
+      </li>
+      <li>
+        <b>危機感を煽る演出はしません</b>
+        <span>赤い警告色や派手な音で急かすことはしません。事実と日付だけを、落ち着いた形で置きます。</span>
+      </li>
+      <li>
+        <b>個人を特定する情報は集めません</b>
+        <span>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産の情報は収集しません。入力する画面も、保存するためのデータベース項目も設けていません。</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     正直に書いておくこと
+     ★★低評価レビューの予防。「通知が来なかった」は最大のクレーム類型なので、
+       インストール前に読ませる。信頼はここで買う。
+     ============================================================ -->
+<section id="honest">
+  <div class="wrap">
+    <h2>正直に書いておくこと</h2>
+    <p class="sec-lead">インストールする前に知っておいていただきたい制約です。</p>
+
+    <ul class="honest">
+      <li>通知は、公表元の配信状況・通信環境・端末やOSの設定・プッシュ通知基盤の状況により、遅延し、または届かないことがあります。即時性・確実性は保証しません。</li>
+      <li>重要度、影響する通貨、分類ラベル、AIによる翻訳は、機械的に判定・生成したものです。誤り、漏れ、遅れを含むことがあります。</li>
+      <li>「暫定」と表示された日程は慣例に基づく推定であり、公式発表と異なる場合があります。</li>
+      <li>本アプリは各発表機関とは一切関係がなく、各機関の公式アプリ・公式サービスではありません。</li>
+      <li>個人開発のアプリです。不具合の修正や問い合わせへの返信に、お時間をいただくことがあります。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     よくある質問
+     ★審査・レビューで実際に問われることを先に潰す。
+     ============================================================ -->
+<section id="faq" class="section-alt faq">
+  <div class="wrap">
+    <h2>よくある質問</h2>
+    <p class="sec-lead">お問い合わせの前に、こちらもご確認ください。</p>
+
+    <details>
+      <summary>料金はかかりますか</summary>
+      <div class="a"><p>現在は無料でご利用いただけます。将来的に有料の機能を設ける場合は、事前にアプリ内でお知らせし、あらためて同意をいただきます。</p></div>
+    </details>
+    <details>
+      <summary>どんな情報が集められますか</summary>
+      <div class="a">
+        <p>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるために必要な技術的な情報（通知の宛先を識別するトークンなど）のみを取り扱います。</p>
+        <p>プッシュ通知の配信には Google の Firebase Cloud Messaging を利用しており、通知を有効にすると、そのトークンなどが Google（米国）および当方のサーバー（Cloudflare／米国・アジア）へ送信されます。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
+      </div>
+    </details>
+    <details>
+      <summary>中央銀行の公式アプリですか</summary>
+      <div class="a"><p>いいえ。本アプリは日本銀行、財務省、金融庁、米連邦準備制度理事会、欧州中央銀行その他の発表機関とは一切関係がなく、各機関の公式アプリ・公式サービスではありません。</p></div>
+    </details>
+    <details>
+      <summary>ニュース記事は読めますか</summary>
+      <div class="a"><p>報道機関の記事本文は掲載していません。通知や一覧からは、発表機関が公開している原文のページを開けます。</p></div>
+    </details>
+    <details>
+      <summary>対応している通貨ペアは</summary>
+      <div class="a"><p>USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD の10ペアです。この中から監視するものを選べます。</p></div>
+    </details>
+    <details>
+      <summary>通知が届きません</summary>
+      <div class="a"><p>まずアプリの「設定」から<strong>テスト通知</strong>をお試しください。端末側で通知が許可されていない場合は、設定画面から端末の通知設定を開けます。それでも届かない場合は、「設定」に表示される<strong>端末ID</strong>を添えて<a href="mailto:kainan0880jwr@gmail.com">ご連絡</a>ください。調査が早くなります。</p></div>
+    </details>
+  </div>
+</section>
+
+<!-- 末尾CTA -->
+<section class="closing">
+  <div class="wrap">
+    <h2>公表があったことを、静かにお知らせします</h2>
+    <p style="margin:0 auto 24px">
+      判断するのはご自身です。本アプリは、判断に必要な公表があったことをお伝えするところまでを担当します。
+    </p>
+    <!-- ▼STORE▼ 配信開始後、ここもストアリンクに差し替える -->
+    <div class="cta">
+      <span class="btn btn-primary" aria-disabled="true">App Store（配信準備中）</span>
+      <span class="btn btn-primary" aria-disabled="true">Google Play（配信準備中）</span>
+    </div>
+    <!-- ▲STORE▲ -->
+    <p class="cta-note">iOS / Android 対応　情報提供のみ／投資助言ではありません</p>
+  </div>
+</section>
+</main>
 
 <footer>
-  <p>FXたより</p>
+  <div class="wrap">
+    <div class="disclaimer">
+      <b>【免責事項】</b>
+      本アプリは、各国の中央銀行・政府機関等が公表した情報について、「公表があった事実」と公表元へのリンクを通知・表示する情報提供サービスです。
+      金融商品取引法上の投資助言・投資勧誘を行うものではなく、売買の推奨や相場の見通しを示すものではありません。
+      取引に関する判断は、必ずご自身の責任で行ってください。
+      また、本アプリは各発表機関とは一切関係がなく、公式アプリではありません。
+      全文はアプリ内の「免責事項」および<a href="terms.html">利用規約</a>をご確認ください。
+    </div>
+
+    <div class="cols">
+      <div>
+        <a class="brand" href="#top">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
+          <span>FXたより</span>
+        </a>
+        <p class="about">中央銀行・政府機関の発表を直接監視して、為替に影響しうる公表があったことをお知らせする iOS / Android アプリです。</p>
+      </div>
+      <div>
+        <h3>ページ内</h3>
+        <ul>
+          <li><a href="#sources">監視ソース</a></li>
+          <li><a href="#how">仕組み</a></li>
+          <li><a href="#features">できること</a></li>
+          <li><a href="#not">しないこと</a></li>
+          <li><a href="#faq">よくある質問</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>各種文書・お問い合わせ</h3>
+        <ul>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
+          <li><a href="terms.html">利用規約</a></li>
+          <li><a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal">
+      <p>事業者：FXたより　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
+      <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
+      <p>App Store は Apple Inc. の、Google Play は Google LLC の商標です。</p>
+    </div>
+  </div>
 </footer>
+
 </body>
 </html>
