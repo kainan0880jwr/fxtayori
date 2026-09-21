@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <!--
-  FXたより ランディングページ（刷新案 / 2026-09-08）
+  FXたより ランディングページ（刷新 2026-09-08、v1.3 対応の更新 2026-09-21）
+
+  【2026-09-21 の更新】output/review/lp_review_20260921.md に基づく
+    ・App Store 配信開始（id 6809456671）→ 実リンク。Google Play は準備中のまま
+    ・有料プラン「FXたより プラス」（月額300円）を料金セクションとして明記。
+      無料の範囲（3ペア・介入 直近20件）を先に書く（アプリ内 plus_screen と同じ表）
+    ・経済指標（8機関の日程・6通貨の結果・過去の範囲・今日／今週／結果）を独立セクションに
+    ・通貨の値動き・政策金利・ウィジェット・発表元ごとの停止・週次ダイジェストを追加
+    ・免責を第3版に、暫定の3区分（時刻未定／暫定／推定）を明記
+    ・通知イメージを実際の分類ラベルと通知の構成に合わせた
+    ・og.png（tool/make_og.py で生成）・Smart App Banner・JSON-LD を追加
 
   【設計の前提】
     ・GitHub Pages（静的・月0円）で完結する。外部CSS・外部フォント・外部JSを一切読み込まない。
       アプリ内のリンクからも開かれるため、回線が細い場所でも1往復で表示が終わる形にしている。
-    ・画像ファイルを持たない。ロゴは inline SVG で描いている（tool/make_icon.py と同じ座標）。
+    ・ページ本体は画像ファイルを持たない。ロゴは inline SVG で描いている（tool/make_icon.py と同じ座標）。
+      og.png（1200×630）だけは SNS のクローラ向けに置く。ページの読み込みでは取得されない。
     ・景品表示法5条1号（合理的根拠のない優良誤認）を避けるため、
       速さの順位づけや「一番である」類の表現は一切使わない。
       禁止語の実体は fx_tayori/test/widget_test.dart に一覧がある。
@@ -24,8 +35,10 @@
     （このページは style.css に依存しない＝自己完結）
 
   【公開前に差し替えるもの】
-    ・ストア配信開始後、「配信準備中」のブロックを実際のリンクに差し替える。
-      該当箇所は 2 か所。「▼STORE▼」で検索すること。
+    ・Google Play の公開後、「準備中」のボタンを実際のリンクに差し替える。
+      該当箇所は 2 か所。「▼STORE▼」で検索すること。App Store は差し替え済み。
+    ・無料／プラスの表は fx_tayori/lib/screens/plus_screen.dart の _featureTable と同じ内容にする。
+      片方だけ変えると、購入画面と LP で言うことが食い違う。
     ・事業者名・連絡先は直書き。apply_operator.py では更新されないので、
       屋号を変えるときはこのファイルも直すこと（2026-09-08 に実際に漏れた）。
       屋号を変える場合は apply_operator.py を通したあと、このファイルも確認すること。
@@ -35,7 +48,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FXたより — 中央銀行・政府機関の発表を直接監視して通知</title>
-<meta name="description" content="日本銀行・財務省・金融庁・FRB・ECBなど12のソースを直接監視し、為替に影響しうる公表があったことをお知らせするiOS / Androidアプリです。報道機関の記事本文は扱いません。">
+<meta name="description" content="日本銀行・財務省・金融庁・FRB・ECBなど12のソースを直接監視し、為替に影響しうる公表があったことをお知らせするiOSアプリ（Android 準備中）。経済指標の日程と結果は8つの統計機関の公表から。予想値は載せません。">
+<meta name="apple-itunes-app" content="app-id=6809456671">
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#0b1e3d">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FXたより">
@@ -43,9 +58,28 @@
 <meta property="og:description" content="中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。">
 <meta property="og:url" content="https://kainan0880jwr.github.io/fxtayori/">
 <meta name="twitter:card" content="summary_large_image">
-<!-- OGP画像は 1200x630 の og.png を用意してから有効化する（tool/make_icon.py に追記予定）
-<meta property="og:image" content="https://kainan0880jwr.github.io/fxtayori/og.png"> -->
+<meta property="og:image" content="https://kainan0880jwr.github.io/fxtayori/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FXたより — 記事になる前の、発表そのもの。">
 <link rel="canonical" href="https://kainan0880jwr.github.io/fxtayori/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FXたより 為替ニュース通知",
+  "operatingSystem": "iOS 15.0 以降",
+  "applicationCategory": "FinanceApplication",
+  "description": "中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。経済指標の日程と結果、為替介入の記録も。情報提供のみ／投資助言ではありません。",
+  "url": "https://kainan0880jwr.github.io/fxtayori/",
+  "installUrl": "https://apps.apple.com/jp/app/id6809456671",
+  "offers": [
+    {"@type": "Offer", "price": "0", "priceCurrency": "JPY", "description": "無料"},
+    {"@type": "Offer", "price": "300", "priceCurrency": "JPY", "description": "FXたより プラス（月額・自動更新・任意）"}
+  ],
+  "author": {"@type": "Organization", "name": "IKD Studio"}
+}
+</script>
 <!-- ファビコンも外部ファイルを持たない -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2a52'/%3E%3Cpath d='M13 71 27 61 39 67 51 51 60 57 70.5 33.5' fill='none' stroke='%23fff' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70.5' cy='33.5' r='13' fill='%23ffb340'/%3E%3C/svg%3E">
 <style>
@@ -331,6 +365,28 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .closing p{color:#d3e0f2; max-width:34em; margin-inline:auto}
 .closing .cta{justify-content:center}
 
+/* 料金表（アプリ内 plus_screen の表と同じ4行） */
+.price{display:grid; gap:14px}
+@media (min-width:720px){ .price{grid-template-columns:1fr 1fr} }
+.plan{background:var(--bg); border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow)}
+.plan.plus{border-color:var(--amber)}
+.plan .name{font-size:13px; letter-spacing:.1em; color:var(--muted); font-weight:700; margin:0 0 4px}
+.plan .amount{font-size:26px; font-weight:800; margin:0 0 2px}
+.plan .amount small{font-size:13px; font-weight:600; color:var(--muted); margin-left:4px}
+.plan .note{font-size:12.5px; color:var(--muted); margin:0 0 14px; line-height:1.7}
+.plan ul{list-style:none; margin:0; padding:0}
+.plan li{font-size:14.5px; padding:9px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:12px}
+.plan li span:first-child{flex:0 0 auto}
+.plan li span:last-child{color:var(--text); font-weight:600; text-align:right}
+.plan li.off span:last-child{color:var(--muted); font-weight:400}
+.fine{font-size:12.5px; color:var(--muted); line-height:1.8; margin:18px 0 0}
+
+/* 出典（統計機関）の一覧 */
+.origins{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+@media (min-width:720px){ .origins{grid-template-columns:1fr 1fr} }
+.origins li{font-size:14px; padding:10px 14px; background:var(--bg); border:1px solid var(--line); border-radius:9px; display:flex; gap:10px; align-items:baseline}
+.origins li b{font-size:12px; letter-spacing:.06em; color:var(--muted); flex:0 0 5.5em}
+
 /* 免責 */
 .disclaimer{
   background:var(--surface); border:1px solid var(--line);
@@ -383,9 +439,10 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     </a>
     <nav aria-label="ページ内">
       <a href="#sources">監視ソース</a>
+      <a href="#calendar" class="hide-sp">経済指標</a>
       <a href="#features" class="hide-sp">できること</a>
-      <a href="#not" class="hide-sp">しないこと</a>
-      <a href="#faq">よくある質問</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq" class="hide-sp">よくある質問</a>
     </nav>
   </div>
 </header>
@@ -402,50 +459,50 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow">iOS / Android アプリ</p>
+        <p class="eyebrow">iOS アプリ　／　Android 準備中</p>
         <h1>記事になる前の、<br><span class="amber">発表そのもの</span>。</h1>
         <p class="lead">
           中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。
-          届くのは、公表があった事実と原文へのリンクだけです。
+          届くのは、公表があった事実と原文へのリンクだけです。経済指標の日程と結果も、各国の統計機関の公表から取り込みます。
         </p>
         <ul class="chips">
           <li><b>12</b>の監視ソース</li>
-          <li>日本の当局を<b>3</b>機関</li>
+          <li>指標の日程を<b>8</b>つの統計機関から</li>
           <li>為替介入の記録<b>386</b>件</li>
         </ul>
 
-        <!-- ▼STORE▼ 配信開始後、この div の中身をストアリンクに差し替える -->
+        <!-- ▼STORE▼ Google Play 公開後、2つ目を実リンクに差し替える -->
         <div class="cta">
-          <span class="btn btn-primary" aria-disabled="true">App Store（配信準備中）</span>
-          <span class="btn btn-primary" aria-disabled="true">Google Play（配信準備中）</span>
+          <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6809456671" rel="noopener">App Store で入手</a>
+          <span class="btn btn-primary" aria-disabled="true">Google Play（準備中）</span>
           <a class="btn btn-ghost" href="#features">できることを見る</a>
         </div>
         <!-- ▲STORE▲ -->
 
-        <p class="cta-note">情報提供のみ／投資助言ではありません。無料でご利用いただけます。</p>
+        <p class="cta-note">情報提供のみ／投資助言ではありません。無料で使えます。任意の有料プラン「プラス」は<a href="#pricing" style="color:inherit">料金</a>をご覧ください。</p>
       </div>
 
       <div>
         <div class="mock" role="img"
-             aria-label="通知の表示イメージ。日本銀行の公表を重要度「高」として知らせる通知と、財務省の公表を知らせる通知が並んでいます。">
+             aria-label="通知の表示イメージ。日本銀行の公表を重要度「高」として知らせる通知と、財務省の公表を重要度「中」として知らせる通知が並んでいます。本文は当アプリの分類ラベルで、末尾に「情報提供のみ／投資助言ではありません」と付きます。">
           <div class="notif">
             <svg class="ic" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
             <div class="body">
-              <div class="top"><span class="lvl">重要度 高</span><span>日本銀行</span><span>・ 12:03</span></div>
-              <p class="title">金融政策決定会合に関する公表がありました</p>
-              <p class="sub">USD/JPY・EUR/JPY に関係します　原文を開く →</p>
+              <div class="top"><span class="lvl">高</span><span>JPY</span><span>日本銀行</span></div>
+              <p class="title">金融政策決定会合の結果が公表されました</p>
+              <p class="sub">12:03 ・ 情報提供のみ／投資助言ではありません</p>
             </div>
           </div>
           <div class="notif">
             <svg class="ic" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
             <div class="body">
-              <div class="top"><span class="lvl">重要度 中</span><span>財務省</span><span>・ 19:00</span></div>
-              <p class="title">外国為替平衡操作の実施状況に関する公表がありました</p>
-              <p class="sub">USD/JPY に関係します　原文を開く →</p>
+              <div class="top"><span class="lvl">中</span><span>JPY</span><span>財務省</span></div>
+              <p class="title">外国為替平衡操作（為替介入）の実施状況が公表されました</p>
+              <p class="sub">19:00 ・ 情報提供のみ／投資助言ではありません</p>
             </div>
           </div>
         </div>
-        <p class="mock-caption">表示イメージです。見出しは当アプリが独自に付与した分類ラベルで、発表機関の文章ではありません。</p>
+        <p class="mock-caption">実際の通知と同じ構成の表示イメージです。本文は当アプリが独自に付与した分類ラベルで、発表機関の文章ではありません。タップすると原文が開きます。</p>
       </div>
     </div>
   </div>
@@ -498,9 +555,24 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       </div>
     </div>
 
-    <p class="sec-lead" style="margin:28px 0 0; font-size:13.5px">
-      本アプリは各発表機関とは一切関係がなく、公式アプリ・公式サービスではありません。
-      各機関のロゴや紋章は使用していません。
+    <h3 style="margin:36px 0 10px; font-size:15px">経済指標の日程と数値の出典</h3>
+    <p class="sec-lead" style="margin:0 0 14px; font-size:14px">
+      上の12ソースは「公表があったこと」を知らせる通知の監視先です。経済指標カレンダーの日程と数値は、次の統計機関が公開している予定表とデータから毎日取り込みます。
+    </p>
+    <ul class="origins">
+      <li><b>米国</b><span>経済分析局（BEA）・労働統計局（BLS）</span></li>
+      <li><b>英国</b><span>国家統計局（ONS）</span></li>
+      <li><b>日本</b><span>総務省統計局・内閣府・財務省（貿易統計）</span></li>
+      <li><b>ユーロ圏</b><span>Eurostat</span></li>
+      <li><b>豪州</b><span>オーストラリア統計局（ABS）</span></li>
+      <li><b>カナダ</b><span>カナダ統計局（Statistics Canada）</span></li>
+      <li><b>為替レート</b><span>欧州中央銀行（ECB）ユーロ参照為替レート</span></li>
+      <li><b>政策金利</b><span>各中央銀行の公表値（確認できた機関のみ）</span></li>
+    </ul>
+
+    <p class="sec-lead" style="margin:24px 0 0; font-size:13.5px">
+      本アプリは各発表機関・統計機関とは一切関係がなく、公式アプリ・公式サービスではありません。
+      各機関のロゴや紋章は使用していません。各機関が利用条件として求める出典表示は、アプリ内のカレンダー末尾に常時掲載しています。
     </p>
   </div>
 </section>
@@ -557,19 +629,65 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       </div>
       <div class="card">
         <p class="tag">経済指標カレンダー</p>
-        <h3>公式に日程が出ているものだけ</h3>
-        <p>金融政策決定会合・FOMCなどの日程と、米国の消費者物価指数・失業率・非農業部門雇用者数の実績値を掲載しています（出典：米国労働統計局）。慣例からの推定は「暫定」と表示します。</p>
+        <h3>今日・今週・結果の3つの見方</h3>
+        <p>日本・米国・英国・ユーロ圏・豪州・カナダの主要統計と各国の政策金利発表の日程を、統計機関の予定表から毎日取り込みます。発表後は「前回」「結果」と過去の発表値の範囲を表示します。予想値は載せません。</p>
       </div>
       <div class="card">
         <p class="tag">為替介入トラッカー</p>
         <h3>財務省が公表した実績を、そのまま</h3>
-        <p>実施日・金額・通貨ペアを、事実だけで並べています。1991年からの記録を1画面でさかのぼれます。</p>
+        <p>実施日・金額・通貨ペアを、事実だけで並べています。無料では直近20件、プラスでは1991年からの全386件をさかのぼれます。</p>
+      </div>
+      <div class="card">
+        <p class="tag">通貨の値動き・政策金利</p>
+        <h3>換算した事実を、順位を付けずに</h3>
+        <p>欧州中央銀行の参照為替レートから換算した1週間・1か月・3か月の変化率と、各国の政策金利・通貨ペアごとの金利差。通貨コード順に並べ、強弱の評価や売買の示唆は付けません。</p>
+      </div>
+      <div class="card">
+        <p class="tag">ホーム画面ウィジェット</p>
+        <h3>次の発表を、アプリを開かずに</h3>
+        <p>監視中の通貨の次の重要な発表と日時をホーム画面に置けます（iOS 17 以降）。ウィジェット自体は通信せず、アプリが取り込んだ予定だけを表示します。</p>
       </div>
       <div class="card">
         <p class="tag">通知の設定</p>
         <h3>鳴りすぎないようにする</h3>
-        <p>監視する通貨ペア（10ペア）、通知しきい値、深夜に通知を止める「おやすみモード」、重要な指標の30分前・5分前に届く発表前アラート、届くか確かめるテスト通知。</p>
+        <p>監視する通貨ペア（無料3つ・プラス10ペア）、通知しきい値、発表元ごとに通知を止める設定、深夜に止める「おやすみモード」、週の初めに予定をまとめる週次ダイジェスト（任意）、届くか確かめるテスト通知。重要な指標の30分前・5分前に届く発表前アラートはプラスの機能です。</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     経済指標カレンダー
+     ★v1.1〜1.3 で主機能の一つになった。「予想値を載せない」は
+       このアプリの設計思想そのものなので、独立させて理由まで書く。
+     ============================================================ -->
+<section id="calendar">
+  <div class="wrap">
+    <h2>経済指標は、統計機関の予定表から</h2>
+    <p class="sec-lead">日程も数値も、各機関が自分で公開しているものだけを取り込みます。市場予想（コンセンサス）は扱いません。</p>
+
+    <div class="stats">
+      <div class="stat"><b>8</b><span>日程を取り込む統計機関</span></div>
+      <div class="stat"><b>6</b><span>結果を表示する通貨</span></div>
+      <div class="stat"><b>毎日</b><span>予定表を同期</span></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <p class="tag">載せるもの</p>
+        <h3>日程・前回・結果・過去の範囲・出典</h3>
+        <p>米CPI・雇用統計、英CPI、ユーロ圏HICP、豪CPI、加CPI は発表後に「結果」が入り、次回の行に「前回」として残ります。「過去12回の範囲」は、いつもはどのくらいの値かという事実です。各行に出典の機関名を示し、指標が何を測るかの解説にも辿れます。</p>
+      </div>
+      <div class="card">
+        <p class="tag">載せないもの</p>
+        <h3>市場予想・コンセンサス</h3>
+        <p>予想値は調査会社の有料データで、転載できません。それ以上に、予想との差で「良い・悪い」を言い始めると、このアプリが投資助言に近づきます。代わりに過去の範囲という事実だけを置き、判断はお任せします。</p>
+      </div>
+    </div>
+
+    <div class="disclaimer" style="margin:24px 0 0">
+      日程は機関の都合で変わることがあります。「時刻未定」は日付は公式で時刻が未確認、「暫定」は発表元が暫定としている日程、「推定」は慣例からの推定です。
+      「前回」「結果」「過去の範囲」には、公表元の指数から当アプリが算出した前年比・前月差を含みます。各機関が後日改定することがあります。
     </div>
   </div>
 </section>
@@ -579,7 +697,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
      ★独立させる。他に無いものは、機能一覧の1マスに埋めると勿体ない。
        数字が説得の主役なので、文より先に数字を置く。
      ============================================================ -->
-<section id="intervention">
+<section id="intervention" class="section-alt">
   <div class="wrap">
     <h2>為替介入の記録を、そのまま一覧に</h2>
     <p class="sec-lead">財務省が公表している外国為替平衡操作の実績を、加工せずに並べています。</p>
@@ -594,7 +712,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <div class="card">
         <p class="tag">載せるもの</p>
         <h3>実施日・金額・通貨ペア</h3>
-        <p>財務省が公表した事実だけです。数字の単位は億円と兆円で読みやすく整えていますが、値そのものは変えていません。</p>
+        <p>財務省が公表した事実だけです。数字の単位は億円と兆円で読みやすく整えていますが、値そのものは変えていません。無料では直近20件、プラスでは全件を表示します。</p>
       </div>
       <div class="card">
         <p class="tag">載せないもの</p>
@@ -604,6 +722,54 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     </div>
 
     <p class="sec-lead" style="margin:20px 0 0; font-size:13.5px">出典：財務省「外国為替平衡操作の実施状況」（政府標準利用規約 第2.0版）</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     料金
+     ★無料で何ができるかを先に書く。有料の理由だけを書くと、
+       買ってから「無料でも足りた」と気づかれる（アプリ内の購入画面と同じ順序）。
+       表の内容は fx_tayori/lib/screens/plus_screen.dart の _featureTable と一致させること。
+     ============================================================ -->
+<section id="pricing">
+  <div class="wrap">
+    <h2>料金</h2>
+    <p class="sec-lead">無料のままで、12の発表元すべての通知と、経済指標・為替介入の画面が使えます。プラスは、通知を増やす方向の機能を足すものです。</p>
+
+    <div class="price">
+      <div class="plan">
+        <p class="name">無料</p>
+        <p class="amount">0円</p>
+        <p class="note">アカウント登録なし。広告なし。</p>
+        <ul>
+          <li><span>公式発表の通知</span><span>12の発表元すべて</span></li>
+          <li><span>経済指標カレンダー・結果</span><span>すべて</span></li>
+          <li><span>監視できる通貨ペア</span><span>3つまで</span></li>
+          <li class="off"><span>発表前アラート</span><span>—</span></li>
+          <li><span>為替介入の履歴</span><span>直近20件</span></li>
+          <li><span>おやすみモード</span><span>あり</span></li>
+        </ul>
+      </div>
+      <div class="plan plus">
+        <p class="name">FXたより プラス</p>
+        <p class="amount">月額300円<small>自動更新・任意</small></p>
+        <p class="note">価格はストアの表示が正です。アプリ内の「FXたより プラスについて」から購入できます。</p>
+        <ul>
+          <li><span>公式発表の通知</span><span>12の発表元すべて</span></li>
+          <li><span>経済指標カレンダー・結果</span><span>すべて</span></li>
+          <li><span>監視できる通貨ペア</span><span>10ペアすべて</span></li>
+          <li><span>発表前アラート</span><span>30分前・5分前<br><small style="font-weight:400;color:var(--muted)">30分前のみに減らす設定あり</small></span></li>
+          <li><span>為替介入の履歴</span><span>全386件（1991年〜）</span></li>
+          <li><span>おやすみモード</span><span>あり</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="fine">
+      お支払いは購入の確定時に Apple ID に請求されます。期間終了の24時間前までに解約しない限り、自動的に更新されます。
+      解約は iPhone の「設定」→ ご自身の名前 →「サブスクリプション」からいつでも行えます。アプリを削除しても解約にはなりません。
+      有料プランを購入しても、公表された事実そのものが増減することはありません。
+    </p>
   </div>
 </section>
 
@@ -651,7 +817,9 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <ul class="honest">
       <li>通知は、公表元の配信状況・通信環境・端末やOSの設定・プッシュ通知基盤の状況により、遅延し、または届かないことがあります。即時性・確実性は保証しません。</li>
       <li>重要度、影響する通貨、分類ラベル、AIによる翻訳は、機械的に判定・生成したものです。誤り、漏れ、遅れを含むことがあります。</li>
-      <li>「暫定」と表示された日程は慣例に基づく推定であり、公式発表と異なる場合があります。</li>
+      <li>経済指標の日程は各機関の予定表から取り込んでいますが、機関の都合で変わることがあります。「時刻未定」「暫定」「推定」と表示された日程は確定していません。</li>
+      <li>「前回」「結果」「過去の範囲」、通貨の値動き、政策金利差には、公表元の数値から当アプリが算出・換算した派生値を含みます。市場の実勢や各機関の公表値と異なる場合があり、後日改定されることがあります。</li>
+      <li>統計機関のデータ提供が止まったり形式が変わったりすると、その機関の「結果」が一時的に入らないことがあります。日程・通知・他の機関には影響しません。</li>
       <li>本アプリは各発表機関とは一切関係がなく、各機関の公式アプリ・公式サービスではありません。</li>
       <li>個人開発のアプリです。不具合の修正や問い合わせへの返信に、お時間をいただくことがあります。</li>
     </ul>
@@ -669,13 +837,20 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 
     <details>
       <summary>料金はかかりますか</summary>
-      <div class="a"><p>現在は無料でご利用いただけます。将来的に有料の機能を設ける場合は、事前にアプリ内でお知らせし、あらためて同意をいただきます。</p></div>
+      <div class="a">
+        <p>無料で使えます。12の発表元すべての通知、経済指標カレンダーと結果、為替介入の直近20件、監視ペア3つまでが無料の範囲です。</p>
+        <p>任意の有料プラン「FXたより プラス」（月額300円・自動更新）で、監視ペアが10すべてに、重要な指標の発表前アラート、為替介入の全件表示が加わります。詳しくは<a href="#pricing">料金</a>をご覧ください。</p>
+      </div>
+    </details>
+    <details>
+      <summary>予想値（市場コンセンサス）は見られますか</summary>
+      <div class="a"><p>載せていません。予想値は調査会社の有料データで、転載できないことに加え、予想との差で評価を始めると投資助言に近づくためです。代わりに「前回」「結果」と「過去の発表値の範囲」という事実だけを表示します。</p></div>
     </details>
     <details>
       <summary>どんな情報が集められますか</summary>
       <div class="a">
         <p>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるために必要な技術的な情報（通知の宛先を識別するトークンなど）のみを取り扱います。</p>
-        <p>プッシュ通知の配信には Google の Firebase Cloud Messaging を利用しており、通知を有効にすると、そのトークンなどが Google（米国）および当方のサーバー（Cloudflare／米国・アジア）へ送信されます。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
+        <p>プッシュ通知の配信には Google の Firebase Cloud Messaging を利用しており、通知を有効にすると、そのトークンなどが Google（米国）および当方のサーバー（Cloudflare／米国・アジア）へ送信されます。有料プランの決済は Apple が処理し、当方が持つのは有効期限だけです。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </details>
     <details>
@@ -688,7 +863,15 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     </details>
     <details>
       <summary>対応している通貨ペアは</summary>
-      <div class="a"><p>USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD の10ペアです。この中から監視するものを選べます。</p></div>
+      <div class="a"><p>USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD の10ペアです。無料では3つまで、プラスでは10すべてを同時に監視できます。</p></div>
+    </details>
+    <details>
+      <summary>Android 版はありますか</summary>
+      <div class="a"><p>準備中です。現在はクローズドテストの段階で、公開の時期が決まりましたらこのページでお知らせします。</p></div>
+    </details>
+    <details>
+      <summary>ホーム画面ウィジェットの置き方は</summary>
+      <div class="a"><p>iOS 17 以降で、アプリを一度開いたあと、ホーム画面を長押し →「＋」→「FXたより」を選びます。表示されるのは、アプリが取り込んだ次の重要な発表と日時です。ウィジェット自体は通信しないため、予定を更新するにはアプリを開いてください。</p></div>
     </details>
     <details>
       <summary>通知が届きません</summary>
@@ -704,13 +887,13 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <p style="margin:0 auto 24px">
       判断するのはご自身です。本アプリは、判断に必要な公表があったことをお伝えするところまでを担当します。
     </p>
-    <!-- ▼STORE▼ 配信開始後、ここもストアリンクに差し替える -->
+    <!-- ▼STORE▼ Google Play 公開後、2つ目を実リンクに差し替える -->
     <div class="cta">
-      <span class="btn btn-primary" aria-disabled="true">App Store（配信準備中）</span>
-      <span class="btn btn-primary" aria-disabled="true">Google Play（配信準備中）</span>
+      <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6809456671" rel="noopener">App Store で入手</a>
+      <span class="btn btn-primary" aria-disabled="true">Google Play（準備中）</span>
     </div>
     <!-- ▲STORE▲ -->
-    <p class="cta-note">iOS / Android 対応　情報提供のみ／投資助言ではありません</p>
+    <p class="cta-note">iOS 15 以降　情報提供のみ／投資助言ではありません</p>
   </div>
 </section>
 </main>
@@ -719,10 +902,11 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   <div class="wrap">
     <div class="disclaimer">
       <b>【免責事項】</b>
-      本アプリは、各国の中央銀行・政府機関等が公表した情報について、「公表があった事実」と公表元へのリンクを通知・表示する情報提供サービスです。
+      本アプリは、各国の中央銀行・政府機関・統計機関等が公表した情報について、公表があった事実、公表された日程・数値・為替参照レート、および公表元へのリンクを通知・表示する情報提供サービスです。
       金融商品取引法上の投資助言・投資勧誘を行うものではなく、売買の推奨や相場の見通しを示すものではありません。
       取引に関する判断は、必ずご自身の責任で行ってください。
-      また、本アプリは各発表機関とは一切関係がなく、公式アプリではありません。
+      「前回」「結果」「過去の範囲」、通貨の値動き、政策金利差は当アプリが算出・換算した派生値を含み、市場の実勢や各機関の公表値と異なる場合があります。
+      また、本アプリは各発表機関・統計機関とは一切関係がなく、公式アプリではありません。
       全文はアプリ内の「免責事項」および<a href="terms.html">利用規約</a>をご確認ください。
     </div>
 
@@ -740,6 +924,8 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
           <li><a href="#sources">監視ソース</a></li>
           <li><a href="#how">仕組み</a></li>
           <li><a href="#features">できること</a></li>
+          <li><a href="#calendar">経済指標</a></li>
+          <li><a href="#pricing">料金</a></li>
           <li><a href="#not">しないこと</a></li>
           <li><a href="#faq">よくある質問</a></li>
         </ul>
@@ -758,6 +944,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <p>事業者：IKD Studio　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
       <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
       <p>App Store は Apple Inc. の、Google Play は Google LLC の商標です。</p>
+      <p>最終更新：2026年9月21日（v1.3 対応）</p>
     </div>
   </div>
 </footer>
