@@ -1,0 +1,7 @@
+# FXたより — 脆弱性のご報告窓口（RFC 9116）
+# 本番環境への負荷をかける調査・他の利用者のデータへのアクセスはご遠慮ください。
+Contact: mailto:kainan0880jwr@gmail.com
+Expires: 2027-10-01T00:00:00.000Z
+Preferred-Languages: ja, en
+Canonical: https://kainan0880jwr.github.io/fxtayori/.well-known/security.txt
+Policy: https://kainan0880jwr.github.io/fxtayori/privacy.html
