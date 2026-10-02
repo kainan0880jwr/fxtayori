@@ -36,10 +36,10 @@
   <tr><td>免責事項への同意日時</td><td>同意したとき</td><td>同意の記録を残すため</td></tr>
   <tr><td>通知の送信履歴</td><td>通知を送ったとき</td><td>二重送信の防止と送信数の上限管理のため</td></tr>
   <tr><td>有料プランの有効期限</td><td>有料プランを購入したとき</td><td>有料の機能を使える期間を判定するため</td></tr>
-  <tr><td>App Store の取引識別子<br>（originalTransactionId）</td><td>有料プランを購入したとき</td><td>同じ購入が過大な台数で使われていないかを確認するため</td></tr>
+  <tr><td>購入したストアの種別と取引識別子<br>（App Store の originalTransactionId、Google Play の購入トークン）</td><td>有料プランを購入したとき</td><td>購入が有効かを確認するため、同じ購入が過大な台数で使われていないかを確認するため</td></tr>
 </table>
 <p>いずれも Cloudflare D1（アジア太平洋リージョン）に保存されます。</p>
-<div class="note"><strong>クレジットカード番号などの決済情報は、当方では一切受け取りません。</strong>有料プランのお支払いはすべて App Store（Apple Inc.）が処理します。当方が受け取るのは、Apple が署名した「購入が有効かどうか」と「いつまで有効か」の情報だけです。</div>
+<div class="note"><strong>クレジットカード番号などの決済情報は、当方では一切受け取りません。</strong>有料プランのお支払いはすべて App Store（Apple Inc.）または Google Play（Google LLC）が処理します。当方が受け取るのは、各ストアが示す「購入が有効かどうか」と「いつまで有効か」の情報だけです。Google Play でのご購入は、当方のサーバーが Google に購入トークンを照会して有効性を確認します。</div>
 <div class="note"><strong>通知を許可しない場合も本アプリはご利用いただけます。</strong>その場合、通知トークンは取得・保存されず、ニュース一覧・経済カレンダー・設定はそのままご利用いただけます。</div>
 
 <h3>3.2 基盤サービスが自動的に取得する情報</h3>
@@ -99,7 +99,7 @@
 <p>内容を変更する場合は、本ページに変更後の内容を掲載します。重要な変更を行う場合は、アプリ内でお知らせし、必要に応じて再同意をいただきます。</p>
 
 <footer>
-  <p>制定日：2026年9月6日　最終更新日：2026年10月2日</p>
+  <p>制定日：2026年9月6日　最終更新日：＜掲載日＞</p>
   <p>IKD Studio　<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
   <p><a href="./">トップ</a><a href="terms.html">利用規約</a><a href="tokushoho.html">特定商取引法に基づく表示</a></p>
 </footer>
