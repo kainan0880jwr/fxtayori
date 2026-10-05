@@ -1,0 +1,33 @@
+# FXたより のサーバーの見張り（2026-10-05。セキュリティ・レビュー: 外部監視が無かった）
+#
+# 10分おきに /api/health を確かめる。異常（503・接続できない・ok が false）なら、このジョブが失敗し、
+# GitHub からリポジトリの持ち主にメールが届く（GitHub の通知設定 → Actions → 失敗したワークフローのみ）。
+# ★公開リポジトリなので無料・回数の制限なし。60日間リポジトリに更新が無いと GitHub が止めるので、そのときは Actions の画面で再開する。
+# ★秘密の値は使わない（health は公開の窓口）。
+name: health
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: /api/health
+        run: |
+          set -u
+          for i in 1 2 3; do
+            code=$(curl -s -o body.json -w '%{http_code}' --max-time 20 https://fx-tayori.fx-tayori-worker.workers.dev/api/health || echo 000)
+            if [ "$code" = "200" ] && grep -q '"ok":true' body.json; then
+              echo "ok"; cat body.json; exit 0
+            fi
+            echo "try $i: HTTP $code"; cat body.json 2>/dev/null || true
+            sleep 30
+          done
+          echo "::error::FXたより のサーバーが異常です（3回続けて）。手順書 incident_response.md を確認してください"
+          exit 1
