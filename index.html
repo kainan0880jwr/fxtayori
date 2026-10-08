@@ -47,21 +47,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ★外部の資源を読まない（バッジ・画像もこのリポジトリから配信。v1.8 セキュリティ・法務レビュー） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>FXたより — 中央銀行・政府機関の発表を直接監視して通知</title>
-<meta name="description" content="日本銀行・財務省・金融庁・FRB・ECBなどの公式発表を直接監視し、為替に影響しうる公表があったことをお知らせするiOSアプリ（Android 準備中）。経済指標の日程と結果は8つの統計機関の公表から。予想値は載せません。">
+<meta name="description" content="日本銀行・財務省・金融庁・FRB・ECBなどの公式発表を直接監視し、為替に影響しうる公表があったことをお知らせするiOSアプリ（Android はテスター募集中）。経済指標の日程と結果は各国の統計機関の公表から。予想値は載せません。">
 <meta name="apple-itunes-app" content="app-id=6809456671">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#0b1e3d">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FXたより">
-<meta property="og:title" content="FXたより — 記事になる前の、発表そのもの。">
+<meta property="og:title" content="FXたより — 記事ではなく、発表そのもの。">
 <meta property="og:description" content="中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。">
 <meta property="og:url" content="https://kainan0880jwr.github.io/fxtayori/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://kainan0880jwr.github.io/fxtayori/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="FXたより — 記事になる前の、発表そのもの。">
+<meta property="og:image:alt" content="FXたより — 記事ではなく、発表そのもの。">
 <link rel="canonical" href="https://kainan0880jwr.github.io/fxtayori/">
 <script type="application/ld+json">
 {
@@ -225,6 +228,20 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--amber); outline-off
   border-radius:20px; padding:16px;
 }
 .mock-caption{font-size:11.5px; color:#a9bcd6; text-align:center; margin:10px 0 0}
+/* App Store バッジ（Apple の素材を改変しない。高さ40px以上・周りに高さの1/4以上の余白） */
+.badge{display:inline-block; padding:10px; margin:-10px 0}
+.badge img{display:block; height:40px; width:auto}
+.cta-sub{font-size:13px; margin:8px 0 0}
+.cta-sub a{color:inherit}
+/* 画面（スマホは横スクロール、PC は3枚並べる） */
+.shots{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 2px 12px; -webkit-overflow-scrolling:touch}
+.shots figure{flex:0 0 68%; margin:0; scroll-snap-align:center}
+.shots img{width:100%; height:auto; border-radius:18px; box-shadow:0 6px 24px rgba(0,0,0,.18); display:block}
+.shots figcaption{font-size:13px; text-align:center; margin-top:8px}
+.shots-note{color:inherit; opacity:.75}
+@media (min-width:720px){ .shots{overflow:visible; justify-content:center} .shots figure{flex:0 1 280px} }
+.stats-note,.note-sm{font-size:12px; opacity:.8; margin-top:10px}
+.tester-steps{padding-left:1.4em; line-height:1.9}
 .notif{
   background:rgba(255,255,255,.96); color:#101722;
   border-radius:13px; padding:12px 14px; margin-bottom:9px;
@@ -459,25 +476,26 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow">iOS アプリ　／　Android 準備中</p>
-        <h1>記事になる前の、<br><span class="amber">発表そのもの</span>。</h1>
+        <p class="eyebrow">iOS アプリ　／　Android はテスター募集中</p>
+        <h1>記事ではなく、<br><span class="amber">発表そのもの</span>。</h1>
         <p class="lead">
-          中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があったことをお知らせします。
-          届くのは、公表があった事実と原文へのリンクだけです。経済指標の日程と結果も、各国の統計機関の公表から取り込みます。
+          中央銀行・政府機関の公式発表を直接監視して、為替に影響しうる公表があった事実と原文へのリンクをお知らせします。
         </p>
-        <ul class="chips">
-          <li><b>12</b>の監視ソース</li>
-          <li>指標の日程を<b>8</b>つの統計機関から</li>
-          <li>為替介入の記録<b>386</b>件</li>
-        </ul>
-
-        <!-- ▼STORE▼ Google Play 公開後、2つ目を実リンクに差し替える -->
+        <!-- ▼STORE▼ ★App Store のリンクはキャンペーントークン付き（ct=lp_top）。ASC の「キャンペーン」で LP 経由の閲覧・DL を数える
+             （5件未満は表示されない）。★発表元の数は書かない（取得先の増減で嘘になる。v1.8 レビュー）
+             ★Google Play のバッジは製品版の公開まで使わない -->
         <div class="cta">
-          <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6809456671" rel="noopener">App Store で入手</a>
-          <span class="btn btn-primary" aria-disabled="true">Google Play（準備中）</span>
+          <a class="badge" href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_top&amp;mt=8" rel="noopener"><img src="img/app-store-badge-ja.svg" width="109" height="40" alt="App Store からダウンロード"></a>
           <a class="btn btn-ghost" href="#features">できることを見る</a>
         </div>
+        <p class="cta-sub"><a href="#android">Android の方はこちら（テスター募集中）</a></p>
         <!-- ▲STORE▲ -->
+
+        <ul class="chips">
+          <li>日銀・財務省・金融庁</li>
+          <li>FRB・ECB・BOE など</li>
+          <li>為替介入の記録</li>
+        </ul>
 
         <p class="cta-note">情報提供のみ／投資助言ではありません。無料で使えます。任意の有料プラン「プラス」は<a href="#pricing" style="color:inherit">料金</a>をご覧ください。</p>
       </div>
@@ -509,6 +527,21 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 </section>
 
 <!-- ============================================================
+     画面（v1.8）。★ストアと同じ実画面。スマホは横にスクロール、PC は3枚並べる
+     ============================================================ -->
+<section id="screens" aria-label="画面">
+  <div class="wrap">
+    <h2>アプリの画面</h2>
+    <div class="shots">
+      <figure><img src="img/shot_news.webp" width="540" height="1173" loading="lazy" alt="ニュースの画面。次の重要な発表の予定と、日本銀行・ECB・FRB の公表の一覧"><figcaption>公表の一覧と、次の山場</figcaption></figure>
+      <figure><img src="img/shot_results.webp" width="540" height="1173" loading="lazy" alt="経済指標の結果の画面。発表された数値と前回の値の一覧"><figcaption>経済指標の結果</figcaption></figure>
+      <figure><img src="img/shot_intervention.webp" width="540" height="1173" loading="lazy" alt="為替介入の画面。財務省が公表した介入の日付と金額の一覧"><figcaption>為替介入の記録</figcaption></figure>
+    </div>
+    <p class="mock-caption shots-note">表示イメージです（内容は撮影時点のもの）。情報提供のみ／投資助言ではありません。</p>
+  </div>
+</section>
+
+<!-- ============================================================
      監視ソース
      ★機能より先にソースを見せる。一次情報アプリではソースが仕様そのもので、
        「何を見ているか」が分かった時点で説得はほぼ終わる。
@@ -517,7 +550,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   <div class="wrap">
     <h2>見ているのは、当局の公式サイトそのもの</h2>
     <p class="sec-lead">
-      11のフィードを直接監視しています。日本の3機関が入っているところが、海外発のサービスとの違いです。
+      日本の3機関（日本銀行・財務省・金融庁）と、海外の中央銀行・政府機関の公式サイトとフィードを、直接監視しています。
     </p>
 
     <div class="sources">
@@ -583,9 +616,9 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
      ============================================================ -->
 <section id="how">
   <div class="wrap">
-    <h2>記事を待たない、という設計</h2>
+    <h2>発表元を直接見る、という設計</h2>
     <p class="sec-lead">
-      報道記事は、記者が発表を読んでから書かれます。本アプリは発表そのものを見ているので、間に人の作業が入りません。
+      報道記事を経由せず、発表元のサイトとフィードを定期的に確認して、公表があったことをお知らせします。確認の間隔や配信の状況によって通知は遅れることがあり、報道より早く届くことを保証するものではありません。
     </p>
 
     <div class="steps">
@@ -706,6 +739,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <div class="stat"><b>1991年</b><span>さかのぼれる最初の年</span></div>
       <div class="stat"><b>122兆円</b><span>記録されている累計額</span></div>
     </div>
+    <p class="stats-note">件数・累計額は、2026年10月時点の財務省の公表に基づきます。</p>
 
     <div class="grid cols-2">
       <div class="card">
@@ -730,6 +764,23 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
        買ってから「無料でも足りた」と気づかれる（アプリ内の購入画面と同じ順序）。
        表の内容は fx_tayori/lib/screens/plus_screen.dart の _featureTable と一致させること。
      ============================================================ -->
+<!-- ============================================================
+     Android テスター募集（v1.8）。★文面は FXニュース/output/release/closed_test_testers_20261001.md と同じ。
+       「儲かる」「勝てる」「予想」「最速」「必ず」、特典との引き換えは書かない
+     ============================================================ -->
+<section id="android" class="section-alt">
+  <div class="wrap">
+    <h2>Android 版のテスターを募集しています</h2>
+    <p class="sec-lead">Google Play で公開するために、14日間のテストにご協力いただける方を探しています。インストールしたままにしていただくだけで、毎日使う必要はありません。</p>
+    <ol class="tester-steps">
+      <li>Google Play で使っている Google アカウントで、<a href="https://groups.google.com/g/fxtayori-testers" rel="noopener">テスター用の Google グループ</a>に参加する</li>
+      <li><a href="https://play.google.com/apps/testing/jp.fxtayori.app" rel="noopener">テストのページ</a>で「テスターになる」を押す（グループに入ってから数分かかることがあります）</li>
+      <li><a href="https://play.google.com/store/apps/details?id=jp.fxtayori.app" rel="noopener">Google Play</a>からインストールし、14日間はアンインストールしない</li>
+    </ol>
+    <p class="note-sm">グループからメールが届くことはなく、ほかの参加者にメールアドレスが見えることもありません。当方はテスターの管理のためにメールアドレスを閲覧できます（<a href="privacy.html">プライバシーポリシー</a> 3.3）。製品版の公開後、グループは閉じて削除します。</p>
+  </div>
+</section>
+
 <section id="pricing">
   <div class="wrap">
     <h2>料金</h2>
@@ -866,7 +917,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     </details>
     <details>
       <summary>Android 版はありますか</summary>
-      <div class="a"><p>準備中です。現在はクローズドテストの段階で、公開の時期が決まりましたらこのページでお知らせします。</p></div>
+      <div class="a"><p>現在はクローズドテストの段階です。<a href="#android">テスターを募集しています</a>。公開の時期が決まりましたらこのページでお知らせします。</p></div>
     </details>
     <details>
       <summary>ホーム画面ウィジェットの置き方は</summary>
@@ -886,11 +937,11 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <p style="margin:0 auto 24px">
       判断するのはご自身です。本アプリは、判断に必要な公表があったことをお伝えするところまでを担当します。
     </p>
-    <!-- ▼STORE▼ Google Play 公開後、2つ目を実リンクに差し替える -->
-    <div class="cta">
-      <a class="btn btn-primary" href="https://apps.apple.com/jp/app/id6809456671" rel="noopener">App Store で入手</a>
-      <span class="btn btn-primary" aria-disabled="true">Google Play（準備中）</span>
+    <!-- ▼STORE▼ ct=lp_bottom。Google Play は製品版の公開後に足す -->
+    <div class="cta" style="justify-content:center">
+      <a class="badge" href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_bottom&amp;mt=8" rel="noopener"><img src="img/app-store-badge-ja.svg" width="109" height="40" alt="App Store からダウンロード"></a>
     </div>
+    <p class="cta-sub"><a href="#android">Android の方はこちら（テスター募集中）</a></p>
     <!-- ▲STORE▲ -->
     <p class="cta-note">iOS 15 以降　情報提供のみ／投資助言ではありません</p>
   </div>
@@ -943,8 +994,8 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <div class="legal">
       <p>事業者：IKD Studio　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
       <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
-      <p>App Store は Apple Inc. の、Google Play は Google LLC の商標です。</p>
-      <p>最終更新：2026年9月21日（v1.3 対応）</p>
+      <p>Apple、Apple ロゴ、App Store は、米国その他の国と地域で登録された Apple Inc. の商標です。Google Play は Google LLC の商標です。</p>
+      <p>最終更新：2026年10月9日（v1.8）</p>
     </div>
   </div>
 </footer>
