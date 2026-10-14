@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: 前に見た版
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0（タグは動かせるのでコミットに固定。2026-10-14 計画レビュー セキュリティ 🟡）
         with:
           path: last_version
           key: worker-version-${{ github.run_id }}
@@ -55,7 +55,7 @@ jobs:
           fi
       - name: 今の版を残す
         if: always() && steps.check.outputs.save == '1'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: last_version
           key: worker-version-${{ github.run_id }}
