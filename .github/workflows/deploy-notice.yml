@@ -1,0 +1,64 @@
+# 新しい版の知らせ（障害ではない）— FXたより の Worker の版が変わったら、持ち主に1通メールを出す（2026-10-13 v1.9・v1.12 レビュー）
+#
+# ★前に見た版 ID を Actions のキャッシュに残し、ID が変わった回だけジョブを失敗させる（GitHub が失敗のメールを送る）。
+#   時刻の窓に頼らないので、cron の遅れ・飛ばし、作ってから後でのデプロイ、古い版への戻しでも1回は鳴る。
+#   デプロイ・secret の put/delete（版が進む）のたびに1通。自分の操作なら無視してよい。覚えが無ければ手順書 incident_response.md §0-b2・§0-d
+# ★これは「不注意なデプロイ・secret の変更」に気づくためのもの。Cloudflare のトークンを持つ攻撃者は health の中身を偽れるので、
+#   攻撃者への守りではない（守りはトークンの権限・二要素・Roll。§0-d）。
+# ★初回（キャッシュが無い）は記録だけ。版の情報が前はあったのに消えた・読めないときは失敗させる（黙って見張りが止まらないように）。
+#   health に接続できないときは health.yml が知らせるので、ここでは何もしない。
+# ★秘密の値は使わない（health は公開の窓口）。
+name: 新しい版の知らせ（障害ではない）
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: 前に見た版
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0（タグは動かせるのでコミットに固定。2026-10-14 計画レビュー セキュリティ 🟡）
+        with:
+          path: last_version
+          key: worker-version-${{ github.run_id }}
+          restore-keys: worker-version-
+      - name: 版の確認
+        id: check
+        run: |
+          set -u
+          prev=$(cat last_version/id 2>/dev/null || true)
+          code=$(curl -s -o body.json -w '%{http_code}' --max-time 20 https://fx-tayori.fx-tayori-worker.workers.dev/api/health || echo 000)
+          if [ "$code" = "000" ]; then echo "接続できない（health.yml が知らせる）"; echo "save=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+          id=$(jq -r '.version.id // empty' body.json 2>/dev/null || true)
+          at=$(jq -r '.version.at // empty' body.json 2>/dev/null || true)
+          seen=$(jq -r '.version.seen_at // empty' body.json 2>/dev/null || true)
+          echo "version id=${id:-なし} at=${at:-?} seen_at=${seen:-?} / 前回 ${prev:-なし}"
+          if [ -z "$id" ]; then
+            echo "save=0" >> "$GITHUB_OUTPUT"
+            if [ -n "$prev" ]; then
+              echo "::error::FXたより の health から版の情報が消えました（前回 $prev）。覚えが無ければ手順書 incident_response.md §0-d"
+              exit 1
+            fi
+            exit 0
+          fi
+          mkdir -p last_version && echo "$id" > last_version/id
+          echo "save=1" >> "$GITHUB_OUTPUT"
+          if [ -n "$prev" ] && [ "$prev" != "$id" ]; then
+            echo "::error::FXたより の Worker が新しい版 $id になりました（前回 $prev、作成 ${at:-?}、動き始め ${seen:-?}）。自分のデプロイ・secret の変更なら無視してください。覚えが無ければ手順書 incident_response.md §0-d"
+            echo "changed=1" >> "$GITHUB_OUTPUT"
+          fi
+      - name: 今の版を残す
+        if: always() && steps.check.outputs.save == '1'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: last_version
+          key: worker-version-${{ github.run_id }}
+      - name: 版が変わった
+        if: steps.check.outputs.changed == '1'
+        run: exit 1

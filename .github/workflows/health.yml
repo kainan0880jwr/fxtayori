@@ -24,9 +24,10 @@ jobs:
           for i in 1 2 3; do
             code=$(curl -s -o body.json -w '%{http_code}' --max-time 20 https://fx-tayori.fx-tayori-worker.workers.dev/api/health || echo 000)
             if [ "$code" = "200" ] && grep -q '"ok":true' body.json; then
-              echo "ok"; cat body.json; exit 0
+              echo "ok"; exit 0
             fi
-            echo "try $i: HTTP $code"; cat body.json 2>/dev/null || true
+            # ★公開リポジトリのログに本文を残さない（約90日残る。2026-10-14 計画レビュー セキュリティ 🟡）。件数だけ出し、中身は /api/health を直接見る
+            echo "try $i: HTTP $code reasons=$(jq -r '(.reasons // []) | length' body.json 2>/dev/null || echo ?) warnings=$(jq -r '(.warnings // []) | length' body.json 2>/dev/null || echo ?)"
             sleep 30
           done
           echo "::error::FXたより のサーバーが異常です（3回続けて）。手順書 incident_response.md を確認してください"
