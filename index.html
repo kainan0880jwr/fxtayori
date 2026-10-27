@@ -78,7 +78,7 @@
   "installUrl": "https://apps.apple.com/jp/app/id6809456671",
   "offers": [
     {"@type": "Offer", "price": "0", "priceCurrency": "JPY", "description": "無料"},
-    {"@type": "Offer", "price": "300", "priceCurrency": "JPY", "description": "FXたより プラス（月額・自動更新・任意）"}
+    {"@type": "Offer", "price": "300", "priceCurrency": "JPY", "description": "FXたより プラス（月額・税込・自動更新・任意）"}
   ],
   "author": {"@type": "Organization", "name": "IKD Studio"}
 }
@@ -382,20 +382,30 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .closing p{color:#d3e0f2; max-width:34em; margin-inline:auto}
 .closing .cta{justify-content:center}
 
-/* 料金表（アプリ内 plus_screen の表と同じ4行） */
-.price{display:grid; gap:14px}
-@media (min-width:720px){ .price{grid-template-columns:1fr 1fr} }
-.plan{background:var(--bg); border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow)}
-.plan.plus{border-color:var(--amber)}
-.plan .name{font-size:13px; letter-spacing:.1em; color:var(--muted); font-weight:700; margin:0 0 4px}
-.plan .amount{font-size:26px; font-weight:800; margin:0 0 2px}
-.plan .amount small{font-size:13px; font-weight:600; color:var(--muted); margin-left:4px}
-.plan .note{font-size:12.5px; color:var(--muted); margin:0 0 14px; line-height:1.7}
-.plan ul{list-style:none; margin:0; padding:0}
-.plan li{font-size:14.5px; padding:9px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:12px}
-.plan li span:first-child{flex:0 0 auto}
-.plan li span:last-child{color:var(--text); font-weight:600; text-align:right}
-.plan li.off span:last-child{color:var(--muted); font-weight:400}
+/* 料金表（アプリ内 plus_screen の表と同じ行。2026-10-28: 2枚のカードから1つの比較表に。スマホでも横に見比べられる） */
+.compare-wrap{border:1px solid var(--line); overflow:hidden; border-radius:var(--radius); box-shadow:var(--shadow); background:var(--bg)}
+.compare{width:100%; table-layout:fixed; border-collapse:collapse; font-size:14.5px; line-height:1.6}
+.compare col.label{width:30%}
+.compare caption{caption-side:top; text-align:left; font-size:13px; color:var(--muted); padding:12px 16px 0}
+.compare th,.compare td{padding:11px 14px; border-top:1px solid var(--line); text-align:left; vertical-align:top}
+.compare thead th{border-top:0; font-size:13px; letter-spacing:.06em; color:var(--muted); font-weight:700}
+.compare thead th.plus{color:var(--amber-ink); box-shadow:inset 0 3px 0 var(--amber)}
+.compare .price-sub{display:block; font-size:20px; letter-spacing:0; color:var(--text); font-weight:800; margin-top:2px}
+.compare thead th.plus .price-sub{font-size:15px}
+.compare tbody th{font-weight:600}
+@media (max-width:560px){
+  .compare{font-size:13px}
+  .compare th,.compare td{padding:9px 8px}
+  .compare caption{padding:10px 10px 0}
+  .compare col.label{width:27%}
+  .compare .price-sub{font-size:17px}
+  .compare thead th.plus .price-sub{font-size:12.5px; font-weight:700}
+  .compare small{font-size:11.5px}
+}
+.compare td{font-weight:600}
+.compare td:last-child{background:color-mix(in srgb, var(--amber) 7%, transparent)}
+.compare small{display:block; font-weight:400; font-size:12.5px; color:var(--muted)}
+.note-center{font-size:12.5px; color:var(--muted); line-height:1.7; margin:12px 0 0}
 .fine{font-size:12.5px; color:var(--muted); line-height:1.8; margin:18px 0 0}
 
 /* 出典（統計機関）の一覧 */
@@ -667,7 +677,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <div class="card">
         <p class="tag">為替介入トラッカー</p>
         <h3>財務省が公表した実績を、そのまま</h3>
-        <p>実施日・金額・通貨ペアを、事実だけで並べています。無料では直近20件、プラスでは1991年からの全386件をさかのぼれます。</p>
+        <p>実施日・金額・通貨ペアを、事実だけで並べています。無料では直近20件、プラスでは1991年からの記録をすべてさかのぼれます。</p>
       </div>
       <div class="card">
         <p class="tag">通貨の値動き・政策金利</p>
@@ -682,7 +692,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <div class="card">
         <p class="tag">通知の設定</p>
         <h3>鳴りすぎないようにする</h3>
-        <p>監視する通貨ペア（無料3つ・プラス10ペア）、通知しきい値、発表元ごとに通知を止める設定、深夜に止める「おやすみモード」、週の初めに予定をまとめる週次ダイジェスト（任意）、届くか確かめるテスト通知。重要な指標の30分前・5分前に届く発表前アラートはプラスの機能です。</p>
+        <p>監視する通貨ペア（無料3つ・プラス10ペア）、通知しきい値、発表元ごとに通知を止める設定、深夜に止める「おやすみモード」、週の初めに予定をまとめる週次ダイジェスト（任意）、届くか確かめるテスト通知。重要度★★★の発表の前に届く「発表前アラート」は、無料でも選んだ通貨の1日1件まで（30分前）、プラスでは監視中の通貨の30分前・5分前にお知らせします。</p>
       </div>
     </div>
   </div>
@@ -784,40 +794,40 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 <section id="pricing">
   <div class="wrap">
     <h2>料金</h2>
-    <p class="sec-lead">無料のままで、すべての発表元の通知と、経済指標・為替介入の画面が使えます。プラスは、通知を増やす方向の機能を足すものです。</p>
+    <p class="sec-lead">無料のままで、すべての発表元の通知と、経済指標・為替介入の画面、1日1件までの発表前アラートが使えます。プラスは、通知を増やす方向の機能を足すものです。</p>
 
-    <div class="price">
-      <div class="plan">
-        <p class="name">無料</p>
-        <p class="amount">0円</p>
-        <p class="note">アカウント登録なし。広告なし。</p>
-        <ul>
-          <li><span>公式発表の通知</span><span>すべての発表元</span></li>
-          <li><span>経済指標カレンダー・結果</span><span>すべて</span></li>
-          <li><span>監視できる通貨ペア</span><span>3つまで</span></li>
-          <li class="off"><span>発表前アラート</span><span>—</span></li>
-          <li><span>為替介入の履歴</span><span>直近20件</span></li>
-          <li><span>おやすみモード</span><span>あり</span></li>
-        </ul>
-      </div>
-      <div class="plan plus">
-        <p class="name">FXたより プラス</p>
-        <p class="amount">月額300円<small>自動更新・任意</small></p>
-        <p class="note">価格はストアの表示が正です。アプリ内の「FXたより プラスについて」から購入できます。</p>
-        <ul>
-          <li><span>公式発表の通知</span><span>すべての発表元</span></li>
-          <li><span>経済指標カレンダー・結果</span><span>すべて</span></li>
-          <li><span>監視できる通貨ペア</span><span>10ペアすべて</span></li>
-          <li><span>発表前アラート</span><span>30分前・5分前<br><small style="font-weight:400;color:var(--muted)">30分前のみに減らす設定あり</small></span></li>
-          <li><span>為替介入の履歴</span><span>全386件（1991年〜）</span></li>
-          <li><span>おやすみモード</span><span>あり</span></li>
-        </ul>
-      </div>
+    <!-- ★アプリのプラスの表（lib/screens/plus_screen.dart の _featureTable）と同じ行・同じ言葉にする。
+         tool/check_lp.py が「すべて」「必ず」・件数の固定・仮の文字（【】）を検査する（2026-10-28 プラン・LP レビュー） -->
+    <div class="compare-wrap">
+      <table class="compare">
+        <caption>無料と FXたより プラスの違い</caption>
+        <colgroup><col class="label"><col><col></colgroup>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr">機能</span></th>
+            <th scope="col">無料<span class="price-sub">0円</span></th>
+            <th scope="col" class="plus">FXたより プラス<span class="price-sub">月額300円（税込）・自動更新・任意</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">公式発表の通知</th><td>すべての発表元</td><td>すべての発表元</td></tr>
+          <tr><th scope="row">経済指標の日程・結果</th><td>あり</td><td>あり</td></tr>
+          <tr><th scope="row">監視できる通貨ペア</th><td>3つまで</td><td>10ペアすべて</td></tr>
+          <tr><th scope="row">発表前アラート</th><td>選んだ通貨の★★★<br>1日1件まで（30分前）</td><td>監視中の通貨の★★★<br>30分前・5分前<small>30分前のみに減らす設定あり</small></td></tr>
+          <tr><th scope="row">為替介入の履歴</th><td>直近20件</td><td>すべて（1991年〜）</td></tr>
+          <tr><th scope="row">おやすみモード</th><td>あり</td><td>あり</td></tr>
+        </tbody>
+      </table>
     </div>
+    <p class="note-center">アカウント登録なし。広告なし。プラスの価格はストアの表示が正です。アプリ内の「FXたより プラスについて」から購入でき、購入の確定後すぐにご利用いただけます。</p>
 
     <p class="fine">
-      お支払いは購入の確定時に Apple ID に請求されます。期間終了の24時間前までに解約しない限り、自動的に更新されます。
-      解約は iPhone の「設定」→ ご自身の名前 →「サブスクリプション」からいつでも行えます。アプリを削除しても解約にはなりません。
+      発表前アラートは、★★★の発表が無い日や、おやすみモードの時間（無料の発表前アラートは、未設定の場合は0時〜7時）には届きません。通知は通信環境・端末の設定等により、遅れたり届かなかったりすることがあります。
+    </p>
+    <p class="fine">
+      お支払いは購入の確定時に、App Store では Apple ID、Google Play では Google アカウントに請求されます。期間終了の24時間前までに解約しない限り、自動的に更新されます。
+      解約は、iPhone では「設定」→ ご自身の名前 →「サブスクリプション」、Android では Google Play ストアの「お支払いと定期購入」→「定期購入」からいつでも行えます。アプリを削除しても解約にはなりません。
+      期間の途中で解約しても、その期間の終わりまでご利用いただけます（日割りの返金はありません）。
       有料プランを購入しても、公表された事実そのものが増減することはありません。
     </p>
   </div>
@@ -888,8 +898,8 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <details>
       <summary>料金はかかりますか</summary>
       <div class="a">
-        <p>無料で使えます。すべての発表元の通知、経済指標カレンダーと結果、為替介入の直近20件、監視ペア3つまでが無料の範囲です。</p>
-        <p>任意の有料プラン「FXたより プラス」（月額300円・自動更新）で、監視ペアが10すべてに、重要な指標の発表前アラート、為替介入の全件表示が加わります。詳しくは<a href="#pricing">料金</a>をご覧ください。</p>
+        <p>無料で使えます。すべての発表元の通知、経済指標カレンダーと結果、為替介入の直近20件、監視ペア3つまで、選んだ通貨の★★★の発表前アラート（1日1件まで・30分前）が無料の範囲です。</p>
+        <p>任意の有料プラン「FXたより プラス」（月額300円・自動更新）で、監視ペアが10すべてに、監視中の通貨の★★★の発表の30分前・5分前の発表前アラート、1991年からの為替介入の記録の表示が加わります。詳しくは<a href="#pricing">料金</a>をご覧ください。</p>
       </div>
     </details>
     <details>
@@ -994,8 +1004,9 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <div class="legal">
       <p>事業者：IKD Studio　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
       <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
+      <p>正規の入手先は App Store と Google Play の「FXたより」（提供元 IKD Studio）だけです。当方からメール・SNS・DM でログインや支払いをお願いすることはありません。</p>
       <p>Apple、Apple ロゴ、App Store は、米国その他の国と地域で登録された Apple Inc. の商標です。Google Play は Google LLC の商標です。</p>
-      <p>最終更新：2026年10月9日（v1.8）</p>
+      <p>最終更新：【1.5.3 の配信の日】（1.5.3）</p>
     </div>
   </div>
 </footer>
