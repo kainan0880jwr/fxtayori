@@ -599,7 +599,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 
     <h3 style="margin:36px 0 10px; font-size:15px">経済指標の日程と数値の出典</h3>
     <p class="sec-lead" style="margin:0 0 14px; font-size:14px">
-      上の11ソースは「公表があったこと」を知らせる通知の監視先です（ニュージーランド準備銀行は利用条件で自動のアクセスが認められていないため、通知の対象にしていません。政策金利と会合の日程は人が公表を確かめて載せています）。経済指標カレンダーの日程と数値は、次の統計機関が公開している予定表とデータから毎日取り込みます。
+      上の11ソースは「公表があったこと」を知らせる通知の監視先です（ニュージーランド準備銀行は利用条件で自動のアクセスが認められていないため、通知の対象にしていません。政策金利と会合の日程は人が公表を確かめて載せています）。経済指標カレンダーの日程と数値は、次の統計機関が公開している予定表とデータを使います。多くは毎日自動で取り込み、自動で取得できない一部の日程（米国の消費者物価指数・雇用統計など）は、公表を確かめて人が載せています。
     </p>
     <ul class="origins">
       <li><b>米国</b><span>経済分析局（BEA）・労働統計局（BLS）</span></li>
@@ -609,7 +609,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <li><b>豪州</b><span>オーストラリア統計局（ABS）</span></li>
       <li><b>カナダ</b><span>カナダ統計局（Statistics Canada）</span></li>
       <li><b>為替レート</b><span>欧州中央銀行（ECB）ユーロ参照為替レート</span></li>
-      <li><b>政策金利</b><span>各中央銀行の公表値（確認できた機関のみ）</span></li>
+      <li><b>政策金利</b><span>各中央銀行の公表値（確認できた機関のみ）。米国はニューヨーク連邦準備銀行が公表する実効フェデラルファンド金利（EFFR）も参照</span></li>
     </ul>
 
     <p class="sec-lead" style="margin:24px 0 0; font-size:13.5px">
@@ -709,9 +709,12 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <p class="sec-lead">日程も数値も、各機関が自分で公開しているものだけを取り込みます。市場予想（コンセンサス）は扱いません。</p>
 
     <div class="stats">
-      <div class="stat"><b>8</b><span>日程を取り込む統計機関</span></div>
-      <div class="stat"><b>6</b><span>結果を表示する通貨</span></div>
-      <div class="stat"><b>毎日</b><span>予定表を同期</span></div>
+      <!-- ★数は実装と同じにする（2026-11-04 全体レビュー エンジニア Y2: 「8」「6」が実際の9機関・5通貨と違った）。
+           機関は上の出典の一覧（BEA・BLS・ONS・総務省統計局・内閣府・財務省・Eurostat・ABS・カナダ統計局）、
+           通貨は結果を取り込む USD・GBP・EUR・AUD・CAD（本番 D1 の indicator_values で確認） -->
+      <div class="stat"><b>9</b><span>出典の統計機関</span></div>
+      <div class="stat"><b>5</b><span>結果を表示する通貨</span></div>
+      <div class="stat"><b>毎日</b><span>予定表を確認</span></div>
     </div>
 
     <div class="grid cols-2">
@@ -794,7 +797,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 <section id="pricing">
   <div class="wrap">
     <h2>料金</h2>
-    <p class="sec-lead">無料のままで、すべての発表元の通知と、経済指標・為替介入の画面、1日1件までの発表前アラートが使えます。プラスは、通知を増やす方向の機能を足すものです。</p>
+    <p class="sec-lead">無料のままで、すべての発表元の通知と、経済指標・為替介入の画面、1日1件までの発表前アラートが使えます。プラスは、通知の対象・回数と、記録の表示を増やす機能を足すものです。</p>
 
     <!-- ★アプリのプラスの表（lib/screens/plus_screen.dart の _featureTable）と同じ行・同じ言葉にする。
          tool/check_lp.py が「すべて」「必ず」・件数の固定・仮の文字（【】）を検査する（2026-10-28 プラン・LP レビュー） -->
@@ -819,10 +822,10 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
         </tbody>
       </table>
     </div>
-    <p class="note-center">アカウント登録なし。広告なし。プラスの価格はストアの表示が正です。アプリ内の「FXたより プラスについて」から購入でき、購入の確定後すぐにご利用いただけます。</p>
+    <p class="note-center">アカウント登録なし。広告なし。プラスの価格はストアの表示が正です。アプリ内の「FXたより プラスについて」から購入でき、購入の確定後すぐに（お支払いが保留中の場合は完了後に）ご利用いただけます。</p>
 
     <p class="fine">
-      発表前アラートは、★★★の発表が無い日や、おやすみモードの時間（無料の発表前アラートは、未設定の場合は0時〜7時）には届きません。通知は通信環境・端末の設定等により、遅れたり届かなかったりすることがあります。
+      発表前アラートは、★★★の発表が無い日には届きません。無料の発表前アラートは、おやすみモードの時間（未設定の場合は0時〜7時）にも届きません。プラスの発表前アラートは★★★のため、おやすみモードの時間にも送ります。通知は通信環境・端末の設定等により、遅れたり届かなかったりすることがあります。
     </p>
     <p class="fine">
       お支払いは購入の確定時に、App Store では Apple ID、Google Play では Google アカウントに請求されます。期間終了の24時間前までに解約しない限り、自動的に更新されます。
@@ -909,7 +912,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <details>
       <summary>どんな情報が集められますか</summary>
       <div class="a">
-        <p>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるために必要な技術的な情報（通知の宛先を識別するトークンなど）のみを取り扱います。</p>
+        <p>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるため、および不具合の調査と利用している端末の数の集計のために、技術的な情報（端末ID・通知の宛先のトークン・アプリの版・同意した免責事項の版など）を取り扱います。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
         <p>プッシュ通知の配信には Google の Firebase Cloud Messaging を利用しており、通知を有効にすると、そのトークンなどが Google（米国）および当方のサーバー（Cloudflare／米国・アジア）へ送信されます。有料プランの決済は Apple または Google が処理し、当方が持つのは有効期限と、購入を確かめるための取引の識別子（Google Play はそのハッシュ値）だけです。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </details>
@@ -945,7 +948,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   <div class="wrap">
     <h2>公表があったことを、静かにお知らせします</h2>
     <p style="margin:0 auto 24px">
-      判断するのはご自身です。本アプリは、判断に必要な公表があったことをお伝えするところまでを担当します。
+      判断するのはご自身です。本アプリは、公表があったことをお伝えするところまでを担当します。
     </p>
     <!-- ▼STORE▼ ct=lp_bottom。Google Play は製品版の公開後に足す -->
     <div class="cta" style="justify-content:center">
@@ -996,6 +999,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
           <li><a href="privacy.html">プライバシーポリシー</a></li>
           <li><a href="terms.html">利用規約</a></li>
           <li><a href="tokushoho.html">特定商取引法に基づく表示</a></li>
+          <li><a href="incident.html">障害・誤った通知のときの対応（現在のお知らせ）</a></li>
           <li><a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></li>
         </ul>
       </div>
@@ -1004,9 +1008,9 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <div class="legal">
       <p>事業者：IKD Studio　連絡先：<a href="mailto:kainan0880jwr@gmail.com">kainan0880jwr@gmail.com</a></p>
       <p>不具合のご報告では、アプリの「設定」→「端末ID」に表示される値をお知らせいただけると調査が早くなります。</p>
-      <p>正規の入手先は App Store と Google Play の「FXたより」（提供元 IKD Studio）だけです。当方からメール・SNS・DM でログインや支払いをお願いすることはありません。</p>
+      <p>正規の入手先は App Store と Google Play の「FXたより」（提供元 IKD Studio）だけです。当方からメール・SNS・DM でログインや支払いをお願いすることはありません。通知が届かない・おかしな通知が届いたときは、<a href="incident.html">障害・誤った通知のときの対応</a>の「現在のお知らせ」をご確認ください。</p>
       <p>Apple、Apple ロゴ、App Store は、米国その他の国と地域で登録された Apple Inc. の商標です。Google Play は Google LLC の商標です。</p>
-      <p>最終更新：2026年10月29日（1.5.3）</p>
+      <p>最終更新：【公開日】</p>
     </div>
   </div>
 </footer>
