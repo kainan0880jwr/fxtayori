@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>障害・誤った通知のときの対応 — FXたより</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -16,8 +18,9 @@
 責任の範囲は<a href="terms.html">利用規約</a>（第4条の2・第7条）の定めによります。このページは、その運用の考え方を説明するものです。</p>
 
 <h2>現在のお知らせ</h2>
-<p>現在、お知らせはありません。</p>
-<!-- ★障害・訂正のときはここに日時と内容を書く（アプリ内のお知らせ欄 APP_NOTICE と同じ内容）。解消したら「解消済み」と日時を添えて残し、30日後に消す -->
+<p>掲載中のお知らせはありません（最終更新: 【公開日】）。掲載が無い場合も、障害が起きていないことを示すものではありません。アプリが使えないときは、しばらく待ってからお試しください。</p>
+<!-- ★障害・訂正のときはここに日時と内容を書く（アプリ内のお知らせ欄 APP_NOTICE と同じ内容）。解消したら「解消済み」と日時を添えて残し、30日後に消す。
+     ★書き換えたら（最終更新: …）の日付も直す。「最終更新」と「示すものではありません」は tools/check_lp.py が検査する（2026-11-11） -->
 
 <h2>1. 起こりうること</h2>
 <p>本アプリは、各国の中央銀行・政府機関・統計機関が公表した情報を取り込み、通知・表示しています。次のような原因により、通知が遅れる・届かない・止まる、または誤った内容の通知・表示が生じることがあります。</p>

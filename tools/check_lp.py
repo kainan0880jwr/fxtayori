@@ -11,7 +11,8 @@
   2. 事実と違いうる断定を書いていない（「必ず届」「すべての発表前アラート」「件数の制限なし」。景品表示法の優良誤認）
   3. 介入の件数を料金表に固定していない（「全386件」のように。介入が1回あれば事実と違う）
   4. 料金表の行が、アプリのプラスの表（_featureTable の rows）の行をすべて含む
-  5. 文書ページにも CSP・referrer の meta がある
+  5. 文書ページにも CSP・referrer の meta がある（incident.html を含む）
+  6. incident.html の「現在のお知らせ」に最終更新の日付と、「掲載が無い＝障害が無い」と読ませない注記がある（2026-11-11）
 問題があれば理由を出して終了コード 1。
 """
 import re
@@ -20,7 +21,12 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ["index.html", "privacy.html", "terms.html", "tokushoho.html"]
+PAGES = ["index.html", "privacy.html", "terms.html", "tokushoho.html", "incident.html"]
+# incident.html に必ず残す言葉（お知らせが無いときの書き方。2026-11-11 法務レビュー）
+INCIDENT_REQUIRED = [
+    ("最終更新", "「現在のお知らせ」に最終更新の日付が無い"),
+    ("示すものではありません", "「掲載が無い場合も、障害が起きていないことを示すものではありません」が無い"),
+]
 FORBIDDEN = [
     # 【免責事項】のような見出しは通す。日付・未定の仮の文字だけを止める
     (re.compile(r"【[^】]*(?:日|未定|TBD|XX)[^】]*】"), "仮の文字が残っている（公開の日に入れる）"),
@@ -81,6 +87,10 @@ def main() -> int:
                 errors.append(f"{name}:{line}: {why}: {hit.group(0)}")
         if 'http-equiv="Content-Security-Policy"' not in text or 'name="referrer"' not in text:
             errors.append(f"{name}: CSP・referrer の meta が無い")
+        if name == "incident.html":
+            for word, why in INCIDENT_REQUIRED:
+                if word not in body:
+                    errors.append(f"{name}: {why}")
 
     parser = PricingRows()
     parser.feed((ROOT / "index.html").read_text(encoding="utf-8"))
