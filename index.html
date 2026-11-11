@@ -498,6 +498,17 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 .legal{border-top:1px solid var(--line); padding-top:20px; font-size:13px; color:var(--muted)}
 .legal p{margin:0 0 6px}
 
+/* 新しく増えたこと（1.5.7） */
+.new-band{margin:28px 0 0; padding:20px; border:1px solid var(--line); border-top:3px solid var(--amber); border-radius:var(--radius); background:var(--surface)}
+.new-band h3{font-size:15px; margin:0 0 12px}
+.new-band ul{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+@media (min-width:560px){ .new-band ul{grid-template-columns:1fr 1fr} }
+@media (min-width:900px){ .new-band ul{grid-template-columns:repeat(4,1fr)} }
+.new-band li{background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+.new-band li b{display:block; font-size:15px}
+.new-band li span{display:block; font-size:13px; color:var(--muted)}
+.new-band p{margin:12px 0 0; font-size:13px; color:var(--muted); line-height:1.8}
+
 /* FXたよりのある1日（縦のタイムライン） */
 .day{list-style:none; margin:0; padding:0; position:relative; max-width:42em}
 .day::before{content:""; position:absolute; left:7px; top:10px; bottom:10px; width:2px; background:var(--line)}
@@ -830,6 +841,18 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
         <p>監視する通貨ペア（無料3つ・プラス10ペア）、通知しきい値、発表元ごとに通知を止める設定、深夜に止める「おやすみモード」、週の初めに予定をまとめる週次ダイジェスト（任意）、届くか確かめるテスト通知。</p>
       </div>
     </div>
+
+    <!-- ★1.5.7 で増えたこと（1.5.7 の配信の日に公開する）。読み物・用語集は言葉の意味と仕組みの説明で、相場の見通しや取引の方法は扱わない -->
+    <div class="new-band" aria-labelledby="new-h">
+      <h3 id="new-h">新しく増えたこと</h3>
+      <ul>
+        <li><b>はじめての経済指標</b><span>13本の読み物・無料</span></li>
+        <li><b>用語集</b><span>77語・無料</span></li>
+        <li><b>通知の履歴</b><span>直近7日に送った通知</span></li>
+        <li><b>使い方の案内</b><span>設定からいつでも</span></li>
+      </ul>
+      <p>読み物と用語集は、言葉の意味と仕組みの説明です。相場の見通しや取引の方法は扱いません。通知の履歴は当アプリが送った記録で、届いたことの記録ではありません。</p>
+    </div>
   </div>
 </section>
 
@@ -980,6 +1003,10 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
         <span>派手な音や点滅で急かすことはしません。色は重要度と残り時間を見分けるためだけに使い、事実と日付を落ち着いた形で置きます。</span>
       </li>
       <li>
+        <b>ログイン・入金・個人情報の入力を求める通知は送りません</b>
+        <span>通知の履歴（設定タブ）で、当アプリが送った通知を確かめられます。</span>
+      </li>
+      <li>
         <b>個人を特定する情報は集めません</b>
         <span>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産の情報は収集しません。保存するためのデータベース項目も設けていません（計算機能の入力値は端末内だけで使い、保存・送信しません）。</span>
       </li>
@@ -1072,7 +1099,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <details>
       <summary>機種変更のときは</summary>
       <div class="a">
-        <p>通知の設定（監視する通貨ペア・おやすみモードなど）は新しい端末に引き継がれません。新しい端末のアプリで選び直してください。</p>
+        <p>通知の設定（監視する通貨ペア・おやすみモードなど）は新しい端末に引き継がれません。新しい端末のアプリで選び直してください。Android では、機種変更の際にアプリのデータを引き継ぎません。</p>
         <p>プラスは、新しい端末のアプリの「FXたより プラスについて」で「購入を復元する」を押すと引き継げます（購入したときと同じ Apple ID／Google アカウントで）。1つのご契約で3台までご利用いただけます（30日以上使っていない端末は数えません）。</p>
       </div>
     </details>
