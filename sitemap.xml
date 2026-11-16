@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 公開ページの一覧（2026-11-11）。旧版の規約（terms_YYYYMMDD.html）は載せない。
+     GitHub Pages のプロジェクトのページ（/fxtayori/）なので robots.txt からは指せない。Search Console で送信する -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kainan0880jwr.github.io/fxtayori/</loc></url>
+  <url><loc>https://kainan0880jwr.github.io/fxtayori/privacy.html</loc></url>
+  <url><loc>https://kainan0880jwr.github.io/fxtayori/terms.html</loc></url>
+  <url><loc>https://kainan0880jwr.github.io/fxtayori/tokushoho.html</loc></url>
+  <url><loc>https://kainan0880jwr.github.io/fxtayori/incident.html</loc></url>
+</urlset>
