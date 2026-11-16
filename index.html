@@ -1,63 +1,8 @@
 <!DOCTYPE html>
-<!--
-  FXたより ランディングページ（刷新 2026-09-08、v1.3 対応の更新 2026-09-21）
-
-  【2026-09-21 の更新】output/review/lp_review_20260921.md に基づく
-    ・App Store 配信開始（id 6809456671）→ 実リンク。Google Play は準備中のまま
-    ・有料プラン「FXたより プラス」（月額300円）を料金セクションとして明記。
-      無料の範囲（3ペア・介入 直近20件）を先に書く（アプリ内 plus_screen と同じ表）
-    ・経済指標（8機関の日程・6通貨の結果・過去の範囲・今日／今週／結果）を独立セクションに
-    ・通貨の値動き・政策金利・ウィジェット・発表元ごとの停止・週次ダイジェストを追加
-    ・免責を第3版に、暫定の3区分（時刻未定／暫定／推定）を明記
-    ・通知イメージを実際の分類ラベルと通知の構成に合わせた
-    ・og.png（tool/make_og.py で生成）・Smart App Banner・JSON-LD を追加
-
-  【2026-11-11 の更新（モダン化。11/17 の事実・法務の直しの後のコミット）】
-    ・ファーストビュー: リード・チップを短く、通知の見本に発表前アラート、PC では端末の枠に画面＋見本を重ねる、
-      PC だけ App Store の QR（inline SVG。macOS の CoreImage で作り、CIDetector で読み取れることを確認）
-    ・「FXたよりのある1日」の節、Android テスターの節を FAQ の直前に、縞（section-alt）を交互に
-    ・アクセシビリティ（横スクロールの画面に region・フォーカス枠、注記は13px以上）、ヘッダの App Store ボタン
-    ・text-wrap:balance・auto-phrase、セクションの余白、ベントー型のグリッド、theme-color をライト・ダーク
-    ・JSON-LD を MobileApplication に、og:locale・twitter:image、sitemap.xml、apple-touch-icon（アプリのアイコン 180px をそのまま）
-
-  【設計の前提】
-    ・GitHub Pages（静的・月0円）で完結する。外部CSS・外部フォント・外部JSを一切読み込まない。JS は使っていない。
-      アプリ内のリンクからも開かれるため、回線が細い場所でも1往復で表示が終わる形にしている。
-    ・ロゴは inline SVG で描いている（tool/make_icon.py と同じ座標）。画面の画像（img/*.webp）は width/height を書き、
-      ファーストビューの1枚（PC だけ）以外は遅延読み込みにする。og.png（1200×630）は SNS のクローラ向け。
-    ・画像の名前に版を入れない（img/shot_*.webp は 11/17 と 1.5.7 の配信の日に同じ名前で差し替える段取りのため）。
-    ・景品表示法5条1号（合理的根拠のない優良誤認）を避けるため、
-      速さの順位づけや「一番である」類の表現は一切使わない。
-      禁止語の実体は fx_tayori/test/widget_test.dart に一覧がある。
-      ※このファイル自体を同じ一覧で grep して検査できるよう、
-        コメント内にも禁止語そのものは書かないこと。
-    ・金融商品取引法上の投資助言と受け取られる表現（推奨・見通し・煽り）を使わない。
-    ・事業者表示は屋号「IKD Studio」（2026-09-08 本人決定）。
-      Google Play のデベロッパー名が既に IKD Studio であり、そちらに統一した。
-      「FXたより」はアプリ名であって事業者名ではない。混同しないこと。
-      実名（Apple の販売者名として公開される）はサイトには出さない。
-
-  【公開手順】
-    このファイルを output/legal/site/index.html として置き換え、
-    https://github.com/kainan0880jwr/fxtayori.git に push する。
-    style.css は privacy.html / terms.html が引き続き使うので消さないこと。
-    （このページは style.css に依存しない＝自己完結）
-
-  【公開前に差し替えるもの】
-    ・Google Play の公開後、「準備中」のボタンを実際のリンクに差し替える。
-      該当箇所は「▼STORE▼」で検索すること（Google Play を足すのはヒーローと末尾の2か所）。App Store は差し替え済みで、
-      ct 別に4か所（lp_top・lp_bottom・lp_header・lp_qr。lp_qr は QR の画像なので、URL を変えるなら QR を作り直す）。
-    ・無料／プラスの表は fx_tayori/lib/screens/plus_screen.dart の _featureTable と同じ内容にする。
-      片方だけ変えると、購入画面と LP で言うことが食い違う。
-    ・事業者名・連絡先は直書き。apply_operator.py では更新されないので、
-      屋号を変えるときはこのファイルも直すこと（2026-09-08 に実際に漏れた）。
-      屋号を変える場合は apply_operator.py を通したあと、このファイルも確認すること。
--->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ★外部の資源を読まない（バッジ・画像もこのリポジトリから配信。v1.8 セキュリティ・法務レビュー） -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>FXたより — 中央銀行・政府機関の発表を直接監視して通知</title>
@@ -94,6 +39,7 @@
   "installUrl": "https://apps.apple.com/jp/app/id6809456671",
   "screenshot": [
     "https://kainan0880jwr.github.io/fxtayori/img/shot_news.webp",
+    "https://kainan0880jwr.github.io/fxtayori/img/shot_week.webp",
     "https://kainan0880jwr.github.io/fxtayori/img/shot_results.webp",
     "https://kainan0880jwr.github.io/fxtayori/img/shot_intervention.webp"
   ],
@@ -113,21 +59,14 @@
   "author": {"@type": "Organization", "name": "IKD Studio"}
 }
 </script>
-<!-- ファビコンも外部ファイルを持たない -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2a52'/%3E%3Cpath d='M13 71 27 61 39 67 51 51 60 57 70.5 33.5' fill='none' stroke='%23fff' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='70.5' cy='33.5' r='13' fill='%23ffb340'/%3E%3C/svg%3E">
 <style>
-/* ============================================================
-   1. 設計トークン
-   ------------------------------------------------------------
-   紺（アイコン由来）を主役、橙を1点だけのアクセントにする。
-   橙は「新着がある」ことの色なので、装飾には使わない。
-   ============================================================ */
 :root{
-  --navy-900:#0b1e3d;   /* アイコンのグラデ上端 */
-  --navy-700:#18427a;   /* アイコンのグラデ下端 */
-  --navy-600:#16437a;   /* 既存 style.css の --accent と同値 */
-  --amber:#ffb340;      /* アイコンの光点 */
-  --amber-ink:#8a5000;  /* 白地で橙を文字色に使うときのコントラスト確保用 */
+  --navy-900:#0b1e3d;
+  --navy-700:#18427a;
+  --navy-600:#16437a;
+  --amber:#ffb340;
+  --amber-ink:#8a5000;
 
   --bg:#ffffff;
   --surface:#f4f7fb;
@@ -164,10 +103,8 @@ body{
   font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
   font-size:16px;
   line-height:1.85;
-  /* 文節の途中で折り返さない（対応していないブラウザでは今までどおり） */
   word-break:auto-phrase;
 }
-/* 約物のアキを詰める palt は見出しだけ（本文は詰めると読みにくい）。見出しの行の長さをそろえる */
 h1,h2,h3{font-feature-settings:"palt" 1}
 h1,h2{text-wrap:balance}
 img,svg{max-width:100%}
@@ -179,12 +116,9 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .skip{position:absolute; left:-9999px}
 .skip:focus{left:12px; top:12px; z-index:99; background:#fff; color:#0b1e3d; padding:10px 14px; border-radius:8px}
 
-/* ============================================================
-   2. ヘッダー
-   ============================================================ */
 .site-header{
   position:sticky; top:0; z-index:20;
-  background:var(--bg); /* color-mix 非対応ブラウザ向けのフォールバック */
+  background:var(--bg);
   background:color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter:saturate(140%) blur(10px);
   border-bottom:1px solid var(--line);
@@ -197,7 +131,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .site-header nav a{color:var(--muted); text-decoration:none}
 .site-header nav a:hover{color:var(--text); text-decoration:underline}
 @media (max-width:640px){ .site-header nav a.hide-sp{display:none} }
-/* 320px でも横にはみ出さないよう、狭い幅では「監視ソース」も畳む */
 @media (max-width:420px){ .site-header nav{gap:12px} .site-header nav a.hide-xs{display:none} }
 .site-header nav a.nav-cta{
   color:#fff; background:var(--navy-600); font-size:13px; font-weight:700;
@@ -205,19 +138,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 }
 .site-header nav a.nav-cta:hover{color:#fff; text-decoration:none; background:var(--navy-700)}
 
-/* ============================================================
-   3. ヒーロー
-   ------------------------------------------------------------
-   ★ライト／ダークどちらでも紺のままにする。
-     ブランドの面を配色設定に明け渡さないため。
-   ============================================================ */
 .hero{
   background:linear-gradient(168deg, var(--navy-900) 0%, var(--navy-700) 100%);
   color:#fff;
   position:relative;
   overflow:hidden;
 }
-/* 背景の波紋。アイコンの同心円と同じモチーフを面で反復する */
 .hero::before{
   content:"";
   position:absolute; inset:0;
@@ -248,7 +174,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .hero-grid{display:grid; gap:36px; align-items:center}
 @media (min-width:860px){ .hero-grid{grid-template-columns:1.15fr .85fr; gap:44px} }
 
-/* ストア導線 */
 .cta{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
 .btn{
   display:inline-flex; align-items:center; gap:8px;
@@ -262,14 +187,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 .btn[aria-disabled="true"]{opacity:.55; cursor:default; pointer-events:none}
 .cta-note{font-size:13px; color:#b9c9e0; margin:14px 0 0}
 
-/* 通知の表示イメージ（実装済みの要素だけで描く。架空の画面は描かない） */
 .mock{
   background:rgba(255,255,255,.07);
   border:1px solid rgba(255,255,255,.16);
   border-radius:20px; padding:16px;
 }
 .mock-caption{font-size:13px; color:#a9bcd6; text-align:center; margin:10px 0 0; line-height:1.7}
-/* PC（860px 以上）: 画面を CSS で描いた端末の枠に入れ、通知の見本を重ねる。スマホは見本だけ（ファーストビューを短く） */
 .device{display:none}
 .qr{display:none}
 @media (min-width:860px){
@@ -289,19 +212,18 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .qr svg{flex:0 0 auto; display:block; border-radius:8px}
   .qr p{margin:0}
 }
-/* App Store バッジ（Apple の素材を改変しない。高さ40px以上・周りに高さの1/4以上の余白） */
 .badge{display:inline-block; padding:10px; margin:-10px 0}
 .badge img{display:block; height:40px; width:auto}
 .cta-sub{font-size:13px; margin:8px 0 0}
 .cta-sub a{color:inherit}
-/* 画面（スマホは横スクロール、PC は3枚並べる） */
 .shots{display:flex; gap:14px; overflow-x:auto; border-radius:12px; scroll-snap-type:x mandatory; padding:4px 2px 12px; -webkit-overflow-scrolling:touch}
 .shots figure{flex:0 0 68%; margin:0; scroll-snap-align:center}
 .shots img{width:100%; height:auto; border-radius:18px; box-shadow:0 6px 24px rgba(0,0,0,.18); display:block}
 .shots figcaption{font-size:13px; text-align:center; margin-top:8px}
 .shots-note{color:inherit; opacity:.75}
 .shots:focus-visible{outline:3px solid var(--amber); outline-offset:4px}
-@media (min-width:720px){ .shots{overflow:visible; justify-content:center} .shots figure{flex:0 1 280px} }
+@media (min-width:720px){ .shots figure{flex:0 0 42%} }
+@media (min-width:960px){ .shots{overflow:visible; justify-content:center} .shots figure{flex:0 1 220px} }
 .stats-note,.note-sm{font-size:13px; opacity:.85; margin-top:10px}
 .tester-steps{padding-left:1.4em; line-height:1.9}
 .notif{
@@ -310,7 +232,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   display:flex; gap:11px; align-items:flex-start;
   box-shadow:0 2px 10px rgba(0,0,0,.18);
 }
-/* 最後の1枚は「少し前の通知」に見せる。文字は薄くせず（読みにくくなるため）背景だけ薄く */
 .notif:last-of-type{margin-bottom:0; background:rgba(255,255,255,.74)}
 .notif .ic{flex:0 0 auto; width:32px; height:32px; border-radius:8px}
 .notif .body{min-width:0}
@@ -321,13 +242,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
 }
 .notif .title{font-size:13.5px; font-weight:700; line-height:1.55; margin:0}
 .notif .sub{font-size:11.5px; color:#5b6577; margin:3px 0 0; line-height:1.6}
-/* ★動きは入れない（「危機感を煽る演出はしません」と書いているページ自体が動き回るのは矛盾する）。
-   例外は節の末尾の控えめなフェードインだけ: 不透明度だけ・スクロールに連動・動きを減らす設定では出さない。
-   波紋は背景の同心円（.hero::before）で静止したまま表現する。 */
 
-/* ============================================================
-   4. セクション共通
-   ============================================================ */
 section{padding:clamp(56px,9vw,96px) 0}
 section + section{border-top:1px solid var(--line)}
 .section-alt{background:var(--surface)}
@@ -341,7 +256,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .grid{display:grid; gap:14px}
 @media (min-width:720px){ .cols-2{grid-template-columns:1fr 1fr} }
 @media (min-width:720px){ .cols-3{grid-template-columns:repeat(3,1fr)} }
-/* ベントー型: 主役のカードだけ2列分 */
 @media (min-width:720px){ .cols-2 .wide{grid-column:1 / -1} }
 .card{
   background:var(--bg); border:1px solid var(--line);
@@ -354,7 +268,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
   color:var(--amber-ink); margin:0 0 8px;
 }
 
-/* 監視ソース一覧 */
 .sources{display:grid; gap:20px}
 @media (min-width:720px){ .sources{grid-template-columns:repeat(2,1fr); gap:20px 32px} }
 .src-group h3{
@@ -369,7 +282,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 }
 .section-alt .src-group li{background:var(--bg)}
 
-/* 仕組みの3段 */
 .steps{counter-reset:s; display:grid; gap:14px}
 @media (min-width:820px){ .steps{grid-template-columns:repeat(3,1fr)} }
 .step{
@@ -386,7 +298,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 @media (prefers-color-scheme: dark){ .step::before{background:var(--navy-700)} }
 .step p{margin:0; font-size:14.5px; color:var(--muted)}
 
-/* 数字の面（為替介入） */
 .stats{display:grid; gap:12px; margin:0 0 24px}
 @media (min-width:560px){ .stats{grid-template-columns:repeat(3,1fr)} }
 .stat{
@@ -396,7 +307,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .stat b{display:block; font-size:clamp(28px,7vw,38px); line-height:1.15; font-weight:800; color:var(--amber)}
 .stat span{display:block; font-size:12.5px; color:#c6d6ec; margin-top:5px}
 
-/* 「しないこと」 */
 .nots{list-style:none; margin:0; padding:0; display:grid; gap:12px}
 @media (min-width:720px){ .nots{grid-template-columns:1fr 1fr} }
 .nots li{
@@ -407,7 +317,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .nots b{display:block; font-size:15.5px; margin-bottom:4px}
 .nots span{font-size:14px; color:var(--muted); line-height:1.8}
 
-/* 正直に書いておくこと */
 .honest{list-style:none; margin:0; padding:0}
 .honest li{
   font-size:14.5px; color:var(--muted); line-height:1.85;
@@ -419,7 +328,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
   width:7px; height:7px; border-radius:50%; background:var(--muted);
 }
 
-/* FAQ */
 .faq details{
   border:1px solid var(--line); border-radius:11px;
   background:var(--bg); margin-bottom:10px; overflow:hidden;
@@ -438,7 +346,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .faq .a p{margin:0 0 8px}
 .faq .a p:last-child{margin:0}
 
-/* 末尾CTA */
 .closing{
   background:linear-gradient(168deg, var(--navy-900), var(--navy-700));
   color:#fff; text-align:center; border-top:0;
@@ -447,7 +354,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .closing p{color:#d3e0f2; max-width:34em; margin-inline:auto}
 .closing .cta{justify-content:center}
 
-/* 料金表（アプリ内 plus_screen の表と同じ行。2026-10-28: 2枚のカードから1つの比較表に。スマホでも横に見比べられる） */
 .compare-wrap{border:1px solid var(--line); overflow:hidden; border-radius:var(--radius); box-shadow:var(--shadow); background:var(--bg)}
 .compare{width:100%; table-layout:fixed; border-collapse:collapse; font-size:14.5px; line-height:1.6}
 .compare col.label{width:30%}
@@ -473,13 +379,11 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .note-center{font-size:13px; color:var(--muted); line-height:1.7; margin:12px 0 0}
 .fine{font-size:13.5px; color:var(--muted); line-height:1.8; margin:18px 0 0}
 
-/* 出典（統計機関）の一覧 */
 .origins{list-style:none; margin:0; padding:0; display:grid; gap:8px}
 @media (min-width:720px){ .origins{grid-template-columns:1fr 1fr} }
 .origins li{font-size:14px; padding:10px 14px; background:var(--bg); border:1px solid var(--line); border-radius:9px; display:flex; gap:10px; align-items:baseline}
 .origins li b{font-size:12px; letter-spacing:.06em; color:var(--muted); flex:0 0 5.5em}
 
-/* 免責 */
 .disclaimer{
   background:var(--surface); border:1px solid var(--line);
   border-radius:var(--radius); padding:18px 20px; font-size:13.5px;
@@ -488,7 +392,6 @@ h3{font-size:16.5px; margin:0 0 6px; font-weight:700}
 .section-alt .disclaimer{background:var(--bg)}
 .disclaimer b{color:var(--text)}
 
-/* フッター */
 footer{background:var(--surface); border-top:1px solid var(--line); padding:44px 0 56px}
 footer .cols{display:grid; gap:26px; margin-bottom:28px}
 @media (min-width:720px){ footer .cols{grid-template-columns:1.4fr 1fr 1fr} }
@@ -499,7 +402,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 .legal{border-top:1px solid var(--line); padding-top:20px; font-size:13px; color:var(--muted)}
 .legal p{margin:0 0 6px}
 
-/* 新しく増えたこと（1.5.7） */
 .new-band{margin:28px 0 0; padding:20px; border:1px solid var(--line); border-top:3px solid var(--amber); border-radius:var(--radius); background:var(--surface)}
 .new-band h3{font-size:15px; margin:0 0 12px}
 .new-band ul{list-style:none; margin:0; padding:0; display:grid; gap:10px}
@@ -510,7 +412,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 .new-band li span{display:block; font-size:13px; color:var(--muted)}
 .new-band p{margin:12px 0 0; font-size:13px; color:var(--muted); line-height:1.8}
 
-/* FXたよりのある1日（縦のタイムライン） */
 .day{list-style:none; margin:0; padding:0; position:relative; max-width:42em}
 .day::before{content:""; position:absolute; left:7px; top:10px; bottom:10px; width:2px; background:var(--line)}
 .day li{position:relative; padding:0 0 24px 34px}
@@ -525,7 +426,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 .day b{display:block; font-size:16px; line-height:1.6}
 .day span.what{display:block; font-size:14.5px; color:var(--muted)}
 
-/* 控えめなフェードイン（不透明度だけ）。スクロール連動に対応したブラウザで、動きを減らす設定でないときだけ */
 @media (prefers-reduced-motion: no-preference){
   @supports (animation-timeline: view()){
     @keyframes fade-in{from{opacity:0} to{opacity:1}}
@@ -538,7 +438,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 
 <a class="skip" href="#main">本文へスキップ</a>
 
-<!-- アイコンの図形は1度だけ定義して使い回す（tool/make_icon.py と同じ座標系） -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
@@ -570,7 +469,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       <a href="#features" class="hide-sp">できること</a>
       <a href="#pricing">料金</a>
       <a href="#faq" class="hide-sp">よくある質問</a>
-      <!-- ▼STORE▼ ct=lp_header -->
       <a class="nav-cta" href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_header&amp;mt=8" rel="noopener">App Store</a>
     </nav>
   </div>
@@ -579,11 +477,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 <main id="main">
 <div id="top"></div>
 
-<!-- ============================================================
-     ヒーロー
-     ★最初の1画面で「何のアプリか」を確定させる。
-       旧LPはh1が「FXたより」だけで、読まないと分からなかった。
-     ============================================================ -->
 <section class="hero">
   <div class="wrap">
     <div class="hero-grid">
@@ -593,17 +486,12 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
         <p class="lead">
           日銀・FRB・財務省などの公表と、重要な経済指標の発表時刻を、選んだ通貨ペアに絞ってお知らせします。お知らせするのは公表の事実と時刻、原文へのリンクが中心です。
         </p>
-        <!-- ▼STORE▼ ★App Store のリンクはキャンペーントークン付き（ct=lp_top）。ASC の「キャンペーン」で LP 経由の閲覧・DL を数える
-             （5件未満は表示されない）。★発表元の数は書かない（取得先の増減で嘘になる。v1.8 レビュー）
-             ★Google Play のバッジは製品版の公開まで使わない -->
         <div class="cta">
           <a class="badge" href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_top&amp;mt=8" rel="noopener"><img src="img/app-store-badge-ja.svg" width="109" height="40" alt="App Store からダウンロード"></a>
           <a class="btn btn-ghost" href="#features">できることを見る</a>
         </div>
         <p class="cta-sub"><a href="#android">Android の方はこちら（テスター募集中）</a></p>
-        <!-- ▲STORE▲ -->
 
-        <!-- ★本文にある事実だけ（無料: 料金・cta-note、登録・広告: 料金の注記、予想値・推奨: 経済指標・しないこと） -->
         <ul class="chips">
           <li>無料で使える</li>
           <li>登録不要・広告なし</li>
@@ -612,8 +500,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 
         <p class="cta-note">情報提供のみ／投資助言ではありません。無料で使えます。任意の有料プラン「プラス」は<a href="#pricing" style="color:inherit">料金</a>をご覧ください。</p>
 
-        <!-- ▼STORE▼ ct=lp_qr。PC（860px 以上）だけ表示。QR は scratchpad の CoreImage（CIQRCodeGenerator・誤り訂正 M）で作り、
-             同じ行列を画像にして CIDetector で読み取れることを確かめた（2026-11-11）。URL を変えるときは作り直す -->
         <div class="qr">
           <svg class="qr-code" viewBox="-4 -4 45 45" width="132" height="132" role="img" aria-label="App Store の FXたより のページを開く QR コード" shape-rendering="crispEdges"><rect x="-4" y="-4" width="45" height="45" fill="#fff"/><path fill="#000" d="M0 0h7v1h-7zM8 0h1v1h-1zM10 0h1v1h-1zM13 0h1v1h-1zM16 0h1v1h-1zM19 0h2v1h-2zM22 0h1v1h-1zM24 0h3v1h-3zM28 0h1v1h-1zM30 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM11 1h3v1h-3zM17 1h3v1h-3zM25 1h2v1h-2zM28 1h1v1h-1zM30 1h1v1h-1zM36 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM10 2h1v1h-1zM14 2h1v1h-1zM16 2h3v1h-3zM21 2h2v1h-2zM24 2h1v1h-1zM27 2h1v1h-1zM30 2h1v1h-1zM32 2h3v1h-3zM36 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM23 3h4v1h-4zM30 3h1v1h-1zM32 3h3v1h-3zM36 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h2v1h-2zM11 4h2v1h-2zM15 4h1v1h-1zM17 4h1v1h-1zM22 4h2v1h-2zM25 4h4v1h-4zM30 4h1v1h-1zM32 4h3v1h-3zM36 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM16 5h2v1h-2zM19 5h1v1h-1zM21 5h2v1h-2zM25 5h2v1h-2zM30 5h1v1h-1zM36 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM30 6h7v1h-7zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM20 7h2v1h-2zM23 7h1v1h-1zM25 7h1v1h-1zM27 7h2v1h-2zM0 8h1v1h-1zM4 8h1v1h-1zM6 8h4v1h-4zM12 8h5v1h-5zM20 8h2v1h-2zM28 8h6v1h-6zM36 8h1v1h-1zM0 9h2v1h-2zM4 9h2v1h-2zM7 9h2v1h-2zM10 9h1v1h-1zM13 9h1v1h-1zM18 9h2v1h-2zM23 9h1v1h-1zM26 9h3v1h-3zM30 9h1v1h-1zM32 9h4v1h-4zM1 10h2v1h-2zM6 10h2v1h-2zM9 10h4v1h-4zM15 10h1v1h-1zM17 10h3v1h-3zM21 10h2v1h-2zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h2v1h-2zM31 10h4v1h-4zM0 11h4v1h-4zM5 11h1v1h-1zM8 11h1v1h-1zM15 11h3v1h-3zM19 11h6v1h-6zM27 11h2v1h-2zM31 11h1v1h-1zM34 11h2v1h-2zM0 12h2v1h-2zM3 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM13 12h2v1h-2zM16 12h2v1h-2zM20 12h2v1h-2zM24 12h1v1h-1zM28 12h4v1h-4zM34 12h3v1h-3zM0 13h1v1h-1zM2 13h4v1h-4zM7 13h4v1h-4zM12 13h2v1h-2zM18 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM25 13h5v1h-5zM32 13h2v1h-2zM1 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM8 14h2v1h-2zM11 14h2v1h-2zM14 14h4v1h-4zM20 14h1v1h-1zM22 14h4v1h-4zM27 14h1v1h-1zM29 14h1v1h-1zM31 14h4v1h-4zM36 14h1v1h-1zM1 15h2v1h-2zM5 15h1v1h-1zM12 15h2v1h-2zM15 15h1v1h-1zM17 15h2v1h-2zM20 15h3v1h-3zM24 15h1v1h-1zM27 15h2v1h-2zM30 15h3v1h-3zM34 15h2v1h-2zM0 16h5v1h-5zM6 16h2v1h-2zM9 16h4v1h-4zM18 16h7v1h-7zM28 16h2v1h-2zM31 16h4v1h-4zM0 17h1v1h-1zM2 17h1v1h-1zM5 17h1v1h-1zM7 17h3v1h-3zM11 17h1v1h-1zM13 17h2v1h-2zM16 17h2v1h-2zM19 17h3v1h-3zM24 17h4v1h-4zM29 17h4v1h-4zM34 17h2v1h-2zM0 18h3v1h-3zM4 18h1v1h-1zM6 18h1v1h-1zM9 18h2v1h-2zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM23 18h2v1h-2zM26 18h1v1h-1zM29 18h1v1h-1zM31 18h2v1h-2zM34 18h1v1h-1zM1 19h1v1h-1zM4 19h2v1h-2zM7 19h4v1h-4zM12 19h1v1h-1zM14 19h1v1h-1zM17 19h2v1h-2zM21 19h1v1h-1zM24 19h1v1h-1zM26 19h4v1h-4zM31 19h1v1h-1zM33 19h1v1h-1zM35 19h1v1h-1zM2 20h1v1h-1zM6 20h2v1h-2zM9 20h3v1h-3zM13 20h1v1h-1zM15 20h1v1h-1zM17 20h1v1h-1zM19 20h4v1h-4zM24 20h1v1h-1zM26 20h1v1h-1zM29 20h3v1h-3zM33 20h2v1h-2zM0 21h2v1h-2zM5 21h1v1h-1zM8 21h1v1h-1zM10 21h1v1h-1zM12 21h6v1h-6zM23 21h7v1h-7zM31 21h2v1h-2zM6 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM13 22h3v1h-3zM18 22h1v1h-1zM23 22h7v1h-7zM31 22h6v1h-6zM0 23h1v1h-1zM3 23h1v1h-1zM9 23h1v1h-1zM12 23h2v1h-2zM15 23h2v1h-2zM20 23h1v1h-1zM22 23h3v1h-3zM31 23h2v1h-2zM34 23h3v1h-3zM2 24h1v1h-1zM6 24h2v1h-2zM9 24h1v1h-1zM13 24h4v1h-4zM20 24h1v1h-1zM22 24h3v1h-3zM26 24h3v1h-3zM30 24h1v1h-1zM33 24h2v1h-2zM0 25h1v1h-1zM2 25h2v1h-2zM8 25h3v1h-3zM12 25h1v1h-1zM14 25h1v1h-1zM18 25h3v1h-3zM22 25h1v1h-1zM30 25h1v1h-1zM6 26h1v1h-1zM9 26h2v1h-2zM15 26h1v1h-1zM19 26h4v1h-4zM25 26h5v1h-5zM31 26h2v1h-2zM34 26h1v1h-1zM2 27h3v1h-3zM7 27h1v1h-1zM9 27h2v1h-2zM12 27h6v1h-6zM19 27h1v1h-1zM21 27h1v1h-1zM24 27h1v1h-1zM27 27h3v1h-3zM34 27h1v1h-1zM0 28h2v1h-2zM3 28h1v1h-1zM6 28h2v1h-2zM9 28h1v1h-1zM11 28h1v1h-1zM17 28h1v1h-1zM19 28h4v1h-4zM24 28h1v1h-1zM27 28h6v1h-6zM8 29h2v1h-2zM13 29h1v1h-1zM15 29h2v1h-2zM18 29h1v1h-1zM22 29h2v1h-2zM25 29h2v1h-2zM28 29h1v1h-1zM32 29h1v1h-1zM0 30h7v1h-7zM8 30h4v1h-4zM13 30h3v1h-3zM17 30h1v1h-1zM23 30h4v1h-4zM28 30h1v1h-1zM30 30h1v1h-1zM32 30h1v1h-1zM35 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM10 31h2v1h-2zM17 31h2v1h-2zM21 31h1v1h-1zM24 31h1v1h-1zM26 31h3v1h-3zM32 31h4v1h-4zM0 32h1v1h-1zM2 32h3v1h-3zM6 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM12 32h4v1h-4zM18 32h2v1h-2zM22 32h2v1h-2zM25 32h1v1h-1zM28 32h7v1h-7zM36 32h1v1h-1zM0 33h1v1h-1zM2 33h3v1h-3zM6 33h1v1h-1zM9 33h5v1h-5zM16 33h1v1h-1zM19 33h1v1h-1zM25 33h7v1h-7zM0 34h1v1h-1zM2 34h3v1h-3zM6 34h1v1h-1zM9 34h1v1h-1zM13 34h1v1h-1zM16 34h7v1h-7zM24 34h2v1h-2zM27 34h2v1h-2zM30 34h1v1h-1zM33 34h3v1h-3zM0 35h1v1h-1zM6 35h1v1h-1zM10 35h2v1h-2zM13 35h2v1h-2zM17 35h3v1h-3zM21 35h2v1h-2zM26 35h4v1h-4zM32 35h1v1h-1zM34 35h2v1h-2zM0 36h7v1h-7zM8 36h2v1h-2zM11 36h1v1h-1zM14 36h2v1h-2zM17 36h3v1h-3zM21 36h2v1h-2zM24 36h1v1h-1zM27 36h1v1h-1zM31 36h1v1h-1zM35 36h2v1h-2z"/></svg>
           <p>iPhone のカメラで読み取ると、App Store の FXたより のページが開きます。</p>
@@ -621,7 +507,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       </div>
 
       <div class="hero-visual">
-        <!-- PC だけ端末の枠に画面を入れる。スマホでは画像を取りに行かないよう、picture の既定は 1px の透明な GIF -->
         <div class="device">
           <picture>
             <source media="(min-width:860px)" srcset="img/shot_news.webp" width="540" height="1173">
@@ -661,14 +546,12 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     画面（v1.8）。★ストアと同じ実画面。スマホは横にスクロール、PC は3枚並べる
-     ============================================================ -->
 <section id="screens" aria-label="画面">
   <div class="wrap">
     <h2>アプリの画面</h2>
-    <div class="shots" role="region" aria-label="アプリの画面（横にスクロール）" tabindex="0">
+    <div class="shots" role="region" aria-label="アプリの画面" tabindex="0">
       <figure><img src="img/shot_news.webp" width="540" height="1173" loading="lazy" decoding="async" alt="ニュースの画面。次の重要な発表の予定と、ECB・日本銀行などの公表の一覧"><figcaption>公表の一覧と、次の重要発表</figcaption></figure>
+      <figure><img src="img/shot_week.webp" width="540" height="1173" loading="lazy" decoding="async" alt="経済指標の今週の画面。発表の日時・重要度・通貨・出典の一覧"><figcaption>今週の経済指標の予定</figcaption></figure>
       <figure><img src="img/shot_results.webp" width="540" height="1173" loading="lazy" decoding="async" alt="経済指標の結果の画面。発表された数値と前回の値の一覧"><figcaption>経済指標の結果</figcaption></figure>
       <figure><img src="img/shot_intervention.webp" width="540" height="1173" loading="lazy" decoding="async" alt="為替介入の画面。財務省が公表した介入の日付と金額の一覧"><figcaption>為替介入の記録</figcaption></figure>
     </div>
@@ -676,10 +559,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     FXたよりのある1日（2026-11-11 UI/UX レビュー）
-     ★通知の種類を、時刻の流れで見せる。件数や「届く」を約束しない（例であること・届かないことがあることを添える）
-     ============================================================ -->
 <section id="day" class="section-alt">
   <div class="wrap">
     <h2>FXたよりのある1日<br><small style="font-size:.6em; font-weight:700">（設定で ON にした場合の例）</small></h2>
@@ -693,11 +572,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     監視ソース
-     ★機能より先にソースを見せる。一次情報アプリではソースが仕様そのもので、
-       「何を見ているか」が分かった時点で説得はほぼ終わる。
-     ============================================================ -->
 <section id="sources">
   <div class="wrap">
     <h2>見ているのは、当局の公式サイトそのもの</h2>
@@ -741,7 +615,7 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
 
     <h3 style="margin:36px 0 10px; font-size:15px">経済指標の日程と数値の出典</h3>
     <p class="sec-lead" style="margin:0 0 14px; font-size:14px">
-      上の11ソースは「公表があったこと」を知らせる通知の監視先です（ニュージーランド準備銀行は利用条件で自動のアクセスが認められていないため、通知の対象にしていません。政策金利と会合の日程は人が公表を確かめて載せています）。経済指標カレンダーの日程と数値は、次の統計機関が公開している予定表とデータを使います。多くは毎日自動で取り込み、自動で取得できない一部の日程（米国の消費者物価指数・雇用統計など）は、公表を確かめて人が載せています。
+      上の一覧のソースは「公表があったこと」を知らせる通知の監視先です（ニュージーランド準備銀行は利用条件で自動のアクセスが認められていないため、通知の対象にしていません。政策金利と会合の日程は人が公表を確かめて載せています）。経済指標カレンダーの日程と数値は、次の統計機関が公開している予定表とデータを使います。多くは毎日自動で取り込み、自動で取得できない一部の日程（米国の消費者物価指数・雇用統計など）は、公表を確かめて人が載せています。
     </p>
     <ul class="origins">
       <li><b>米国</b><span>経済分析局（BEA）・労働統計局（BLS）</span></li>
@@ -761,11 +635,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     仕組み
-     ★「速い」と言えない（景表法）ので、経路を見せて読み手に判断してもらう。
-       最上級表現を使わずに速度の話をする唯一の方法。
-     ============================================================ -->
 <section id="how" class="section-alt">
   <div class="wrap">
     <h2>発表元を直接見る、という設計</h2>
@@ -795,11 +664,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     できること
-     ★仕組みを理解した後に機能を置く。先に機能を並べると、
-       「よくあるニュースアプリ」に見えて差が消える。
-     ============================================================ -->
 <section id="features">
   <div class="wrap">
     <h2>できること</h2>
@@ -843,7 +707,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
       </div>
     </div>
 
-    <!-- ★1.5.7 で増えたこと（1.5.7 の配信の日に公開する）。読み物・用語集は言葉の意味と仕組みの説明で、相場の見通しや取引の方法は扱わない -->
     <div class="new-band" aria-labelledby="new-h">
       <h3 id="new-h">新しく増えたこと（アプリ 1.5.7 以降）</h3>
       <ul>
@@ -857,20 +720,12 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     経済指標カレンダー
-     ★v1.1〜1.3 で主機能の一つになった。「予想値を載せない」は
-       このアプリの設計思想そのものなので、独立させて理由まで書く。
-     ============================================================ -->
 <section id="calendar" class="section-alt">
   <div class="wrap">
     <h2>経済指標は、統計機関の予定表から</h2>
     <p class="sec-lead">日程も数値も、各機関が自分で公開しているものだけを取り込みます。市場予想（コンセンサス）は扱いません。</p>
 
     <div class="stats">
-      <!-- ★数は実装と同じにする（2026-11-04 全体レビュー エンジニア Y2: 「8」「6」が実際の9機関・5通貨と違った）。
-           機関は上の出典の一覧（BEA・BLS・ONS・総務省統計局・内閣府・財務省・Eurostat・ABS・カナダ統計局）、
-           通貨は結果を取り込む USD・GBP・EUR・AUD・CAD（本番 D1 の indicator_values で確認） -->
       <div class="stat"><b>9</b><span>出典の統計機関</span></div>
       <div class="stat"><b>5</b><span>結果を表示する通貨</span></div>
       <div class="stat"><b>毎日</b><span>予定表を確認</span></div>
@@ -896,17 +751,11 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     為替介入トラッカー
-     ★独立させる。他に無いものは、機能一覧の1マスに埋めると勿体ない。
-       数字が説得の主役なので、文より先に数字を置く。
-     ============================================================ -->
 <section id="intervention">
   <div class="wrap">
     <h2>為替介入の記録を、一覧に</h2>
     <p class="sec-lead">財務省が公表している外国為替平衡操作の実績を、日付・金額・通貨の組み合わせごとに一覧にしています（金額の単位と通貨の表記は当アプリで整えています）。</p>
 
-    <!-- ★単位をそろえる（2026-11-11: 「386」は件数ではなく実施日数。時点は「2026年10月時点」に統一） -->
     <div class="stats">
       <div class="stat"><b>386日</b><span>実施日数（2026年10月時点）</span></div>
       <div class="stat"><b>1991年</b><span>さかのぼれる最初の年</span></div>
@@ -931,20 +780,11 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     料金
-     ★無料で何ができるかを先に書く。有料の理由だけを書くと、
-       買ってから「無料でも足りた」と気づかれる（アプリ内の購入画面と同じ順序）。
-       表の内容は fx_tayori/lib/screens/plus_screen.dart の _featureTable と一致させること。
-     ============================================================ -->
-
 <section id="pricing" class="section-alt">
   <div class="wrap">
     <h2>料金</h2>
     <p class="sec-lead">無料のままで、すべての発表元の通知と、経済指標・為替介入の画面、1日1件までの発表前アラートが使えます。プラスは、通知の対象・回数と、記録の表示を増やす機能を足すものです。</p>
 
-    <!-- ★アプリのプラスの表（lib/screens/plus_screen.dart の _featureTable）と同じ行・同じ言葉にする。
-         tool/check_lp.py が「すべて」「必ず」・件数の固定・仮の文字（【】）を検査する（2026-10-28 プラン・LP レビュー） -->
     <div class="compare-wrap">
       <table class="compare">
         <caption>無料と FXたより プラスの違い</caption>
@@ -980,11 +820,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     しないこと
-     ★価値を理解した後に置く。冒頭に置くと単なる機能不足に読めるが、
-       ここに置くと設計思想として読める。旧LPはここが2番目にあった。
-     ============================================================ -->
 <section id="not">
   <div class="wrap">
     <h2>しないこと</h2>
@@ -1015,11 +850,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     正直に書いておくこと
-     ★★低評価レビューの予防。「通知が来なかった」は最大のクレーム類型なので、
-       インストール前に読ませる。信頼はここで買う。
-     ============================================================ -->
 <section id="honest" class="section-alt">
   <div class="wrap">
     <h2>正直に書いておくこと</h2>
@@ -1037,10 +867,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     Android テスター募集（v1.8。2026-11-11 に料金の前から FAQ の直前へ）。★文面は FXニュース/output/release/closed_test_testers_20261001.md と同じ。
-       「儲かる」「勝てる」「予想」「最速」「必ず」、特典との引き換えは書かない
-     ============================================================ -->
 <section id="android">
   <div class="wrap">
     <h2>Android 版のテスターを募集しています</h2>
@@ -1054,10 +880,6 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- ============================================================
-     よくある質問
-     ★審査・レビューで実際に問われることを先に潰す。
-     ============================================================ -->
 <section id="faq" class="section-alt faq">
   <div class="wrap">
     <h2>よくある質問</h2>
@@ -1126,19 +948,16 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   </div>
 </section>
 
-<!-- 末尾CTA -->
 <section class="closing">
   <div class="wrap">
     <h2>公表があったことを、静かにお知らせします</h2>
     <p style="margin:0 auto 24px">
       判断するのはご自身です。本アプリは、公表があったことをお伝えするところまでを担当します。
     </p>
-    <!-- ▼STORE▼ ct=lp_bottom。Google Play は製品版の公開後に足す -->
     <div class="cta" style="justify-content:center">
       <a class="badge" href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_bottom&amp;mt=8" rel="noopener"><img src="img/app-store-badge-ja.svg" width="109" height="40" alt="App Store からダウンロード"></a>
     </div>
     <p class="cta-sub"><a href="#android">Android の方はこちら（テスター募集中）</a></p>
-    <!-- ▲STORE▲ -->
     <p class="cta-note">iOS 15 以降　情報提供のみ／投資助言ではありません</p>
   </div>
 </section>
