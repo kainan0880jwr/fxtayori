@@ -13,6 +13,9 @@
   4. 料金表の行が、アプリのプラスの表（_featureTable の rows）の行をすべて含む
   5. 文書ページにも CSP・referrer の meta がある（incident.html を含む）
   6. incident.html の「現在のお知らせ」に最終更新の日付と、「掲載が無い＝障害が無い」と読ませない注記がある（2026-11-11）
+  7. 公開する HTML（旧版の規約を含むすべての *.html）と *.xml に HTML のコメントが無く、HTML の <style> に CSS のコメントが無い。
+     ページのソースから誰でも読めるので、
+     編集のメモは非公開の FXニュース/output/legal/lp_notes.md に書く（2026-11-16 全体レビュー UI/UX UX-G4）
 問題があれば理由を出して終了コード 1。
 """
 import re
@@ -79,7 +82,7 @@ def main() -> int:
     errors = []
     for name in PAGES:
         text = (ROOT / name).read_text(encoding="utf-8")
-        # HTML のコメントは公開されても読まれない前提で除く（説明に禁止語の例を書けるように）
+        # 念のためコメントを除いてから見る（コメントそのものは下の 7 で止める）
         body = re.sub(r"<!--.*?-->", "", text, flags=re.S)
         for pat, why in FORBIDDEN:
             for hit in pat.finditer(body):
@@ -91,6 +94,15 @@ def main() -> int:
             for word, why in INCIDENT_REQUIRED:
                 if word not in body:
                     errors.append(f"{name}: {why}")
+
+    for page in sorted([*ROOT.glob("*.html"), *ROOT.glob("*.xml")]):
+        text = page.read_text(encoding="utf-8")
+        hits = [m.start() for m in re.finditer(r"<!--", text)]
+        for style in re.finditer(r"<style\b.*?</style>", text, re.S):
+            hits += [style.start() + m.start() for m in re.finditer(r"/\*", style.group(0))]
+        for pos in sorted(hits):
+            line = text.count("\n", 0, pos) + 1
+            errors.append(f"{page.name}:{line}: コメントを残さない（メモは FXニュース/output/legal/lp_notes.md に）")
 
     parser = PricingRows()
     parser.feed((ROOT / "index.html").read_text(encoding="utf-8"))
