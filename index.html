@@ -25,6 +25,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="FXたより — 記事ではなく、発表そのもの。">
 <link rel="canonical" href="https://kainan0880jwr.github.io/fxtayori/">
+<link rel="alternate" type="text/plain" href="llms.txt" title="FXたより の要約（AI 向け）">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script type="application/ld+json">
 {
@@ -434,6 +435,118 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
   }
 }
 </style>
+<script type="application/ld+json" id="faq-ld">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "FXたよりは、どんなアプリですか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "重要な経済指標の発表時刻と、日本銀行・財務省・金融庁・FRB・ECB などの中央銀行・政府機関の公表があったことを、選んだ通貨ペアに絞ってお知らせする iPhone アプリです（Android 版はテスト中）。公表は、各機関の公式サイトとフィードを直接見て確かめています。経済指標の日程・前回・結果、為替介入の記録、経済指標の基本（13本）（https://kainan0880jwr.github.io/fxtayori/learn.html）と用語集（77語）（https://kainan0880jwr.github.io/fxtayori/glossary.html）も見られます。情報提供のみで、売買の推奨や相場の見通しは示しません。通知は遅れたり届かなかったりすることがあります。無料で使え、任意の有料プラン「FXたより プラス」（月額300円・税込。価格はストアの表示が正です）があります。App Store で見る（https://apps.apple.com/app/apple-store/id6809456671?pt=129108253\u0026ct=lp_faq\u0026mt=8）"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "料金はかかりますか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "無料で使えます。すべての発表元の通知、経済指標カレンダーと結果、為替介入の直近20件、監視ペア3つまで、選んだ通貨の★★★の発表前アラート（1日1件まで・30分前）が無料の範囲です。 任意の有料プラン「FXたより プラス」（月額300円・自動更新）で、監視ペアが10すべてに、監視中の通貨の★★★の発表の30分前・5分前の発表前アラート、1991年からの為替介入の記録の表示が加わります。詳しくは料金（https://kainan0880jwr.github.io/fxtayori/#pricing）をご覧ください。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "予想値（市場コンセンサス）は見られますか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "載せていません。予想値は調査会社の有料データで、転載できないことに加え、予想との差で評価を始めると投資助言に近づくためです。代わりに「前回」「結果」と「過去の発表値の範囲」という事実だけを表示します。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "どんな情報が集められますか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるため、および不具合の調査と利用している端末の数の集計のために、技術的な情報（端末ID・通知の宛先のトークン・アプリの版・同意した免責事項の版など）を取り扱います。詳しくはプライバシーポリシー（https://kainan0880jwr.github.io/fxtayori/privacy.html）をご覧ください。 プッシュ通知の配信に Google の Firebase Cloud Messaging を利用しているため、アプリの起動時に、Firebase のインストールID・端末とOSの種別・IPアドレスなどが Google（米国）へ送信されます（通知を許可しない場合も送信されます）。通知を許可すると、通知の宛先のトークンも送信されます。また、端末ID・設定・アプリの版などが当方のサーバー（Cloudflare／米国・アジア）へ送信されます。氏名・メールアドレス・取引の情報は集めません。有料プランの決済は Apple または Google が処理し、当方が持つのは有効期限と、購入を確かめるための取引の識別子（Google Play はそのハッシュ値）だけです。詳しくはプライバシーポリシー（https://kainan0880jwr.github.io/fxtayori/privacy.html）をご確認ください。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "中央銀行の公式アプリですか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "いいえ。本アプリは日本銀行、財務省、金融庁、米連邦準備制度理事会、欧州中央銀行その他の発表機関とは一切関係がなく、各機関の公式アプリ・公式サービスではありません。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "ニュース記事は読めますか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "報道機関の記事本文は掲載していません。通知や一覧からは、発表機関が公開している原文のページを開けます。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "対応している通貨ペアは",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD の10ペアです。無料では3つまで、プラスでは10すべてを同時に監視できます。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Android 版はありますか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "現在はクローズドテストの段階です。テスターを募集しています（https://kainan0880jwr.github.io/fxtayori/#android）。公開の時期が決まりましたらこのページでお知らせします。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "機種変更のときは",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "通知の設定（監視する通貨ペア・おやすみモードなど）は新しい端末に引き継がれません。新しい端末のアプリで選び直してください。Android では、機種変更の際にアプリのデータを引き継ぎません。 プラスは、新しい端末のアプリの「FXたより プラスについて」で「購入を復元する」を押すと引き継げます（購入したときと同じ Apple ID／Google アカウントで）。1つのご契約で3台までご利用いただけます（30日以上使っていない端末は数えません）。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "解約・返金はどうすればよいですか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "解約は、各ストアのサブスクリプションの画面から行えます（iPhone は「設定」→ ご自身の名前 →「サブスクリプション」、Android は Google Play ストアの「お支払いと定期購入」→「定期購入」）。アプリを削除しても解約にはなりません。 購入後のキャンセル・返金は、各ストアの規定によります。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "時刻はどこの時間ですか",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "日本時間です。米国・欧州の夏時間の切り替え（米国は3月・11月、欧州は3月・10月）の前後で、日本時間で見た発表時刻が1時間ずれます。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "ウィジェットの置き方は",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "iOS 17 以降で、アプリを一度開いたあと、ホーム画面を長押し →「編集」→「ウィジェットを追加」（iOS 17 では左上の「＋」）→「FXたより」を選びます。ロック画面には、ロック画面を長押し →「カスタマイズ」から置けます。表示されるのは、アプリが取り込んだ次の重要な発表と日時です。ウィジェット自体は通信しないため、予定を更新するにはアプリを開いてください。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "通知が届きません",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "まずアプリの「設定」からテスト通知をお試しください。端末側で通知が許可されていない場合は、設定画面から端末の通知設定を開けます。アプリ 1.5.7 以降では、「設定」の通知の履歴（送信の記録）で、当方が送信の処理をしたかを確かめられます（届いたことの記録ではありません）。それでも届かない場合は、「設定」に表示される端末IDを添えてご連絡（mailto:kainan0880jwr@gmail.com）ください。調査が早くなります。"
+   }
+  }
+ ]
+}
+</script>
 </head>
 <body>
 
@@ -886,63 +999,67 @@ footer .about{font-size:13.5px; color:var(--muted); margin:10px 0 0; max-width:2
     <h2>よくある質問</h2>
     <p class="sec-lead">お問い合わせの前に、こちらもご確認ください。</p>
 
-    <details>
+    <details id="faq-what">
+      <summary>FXたよりは、どんなアプリですか</summary>
+      <div class="a"><p>重要な経済指標の発表時刻と、日本銀行・財務省・金融庁・FRB・ECB などの中央銀行・政府機関の公表があったことを、選んだ通貨ペアに絞ってお知らせする iPhone アプリです（Android 版はテスト中）。公表は、各機関の公式サイトとフィードを直接見て確かめています。</p><p>経済指標の日程・前回・結果、為替介入の記録、<a href="learn.html">経済指標の基本（13本）</a>と<a href="glossary.html">用語集（77語）</a>も見られます。情報提供のみで、売買の推奨や相場の見通しは示しません。通知は遅れたり届かなかったりすることがあります。無料で使え、任意の有料プラン「FXたより プラス」（月額300円・税込。価格はストアの表示が正です）があります。<a href="https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&amp;ct=lp_faq&amp;mt=8" rel="noopener">App Store で見る</a></p></div>
+    </details>
+    <details id="faq-price">
       <summary>料金はかかりますか</summary>
       <div class="a">
         <p>無料で使えます。すべての発表元の通知、経済指標カレンダーと結果、為替介入の直近20件、監視ペア3つまで、選んだ通貨の★★★の発表前アラート（1日1件まで・30分前）が無料の範囲です。</p>
         <p>任意の有料プラン「FXたより プラス」（月額300円・自動更新）で、監視ペアが10すべてに、監視中の通貨の★★★の発表の30分前・5分前の発表前アラート、1991年からの為替介入の記録の表示が加わります。詳しくは<a href="#pricing">料金</a>をご覧ください。</p>
       </div>
     </details>
-    <details>
+    <details id="faq-consensus">
       <summary>予想値（市場コンセンサス）は見られますか</summary>
       <div class="a"><p>載せていません。予想値は調査会社の有料データで、転載できないことに加え、予想との差で評価を始めると投資助言に近づくためです。代わりに「前回」「結果」と「過去の発表値の範囲」という事実だけを表示します。</p></div>
     </details>
-    <details>
+    <details id="faq-data">
       <summary>どんな情報が集められますか</summary>
       <div class="a">
         <p>氏名・メールアドレス・電話番号・住所・取引口座・取引履歴・資産に関する情報は収集しません。通知を届けるため、および不具合の調査と利用している端末の数の集計のために、技術的な情報（端末ID・通知の宛先のトークン・アプリの版・同意した免責事項の版など）を取り扱います。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご覧ください。</p>
         <p>プッシュ通知の配信に Google の Firebase Cloud Messaging を利用しているため、アプリの起動時に、Firebase のインストールID・端末とOSの種別・IPアドレスなどが Google（米国）へ送信されます（通知を許可しない場合も送信されます）。通知を許可すると、通知の宛先のトークンも送信されます。また、端末ID・設定・アプリの版などが当方のサーバー（Cloudflare／米国・アジア）へ送信されます。氏名・メールアドレス・取引の情報は集めません。有料プランの決済は Apple または Google が処理し、当方が持つのは有効期限と、購入を確かめるための取引の識別子（Google Play はそのハッシュ値）だけです。詳しくは<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
       </div>
     </details>
-    <details>
+    <details id="faq-official">
       <summary>中央銀行の公式アプリですか</summary>
       <div class="a"><p>いいえ。本アプリは日本銀行、財務省、金融庁、米連邦準備制度理事会、欧州中央銀行その他の発表機関とは一切関係がなく、各機関の公式アプリ・公式サービスではありません。</p></div>
     </details>
-    <details>
+    <details id="faq-news">
       <summary>ニュース記事は読めますか</summary>
       <div class="a"><p>報道機関の記事本文は掲載していません。通知や一覧からは、発表機関が公開している原文のページを開けます。</p></div>
     </details>
-    <details>
+    <details id="faq-pairs">
       <summary>対応している通貨ペアは</summary>
       <div class="a"><p>USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD の10ペアです。無料では3つまで、プラスでは10すべてを同時に監視できます。</p></div>
     </details>
-    <details>
+    <details id="faq-android">
       <summary>Android 版はありますか</summary>
       <div class="a"><p>現在はクローズドテストの段階です。<a href="#android">テスターを募集しています</a>。公開の時期が決まりましたらこのページでお知らせします。</p></div>
     </details>
-    <details>
+    <details id="faq-device">
       <summary>機種変更のときは</summary>
       <div class="a">
         <p>通知の設定（監視する通貨ペア・おやすみモードなど）は新しい端末に引き継がれません。新しい端末のアプリで選び直してください。Android では、機種変更の際にアプリのデータを引き継ぎません。</p>
         <p>プラスは、新しい端末のアプリの「FXたより プラスについて」で「購入を復元する」を押すと引き継げます（購入したときと同じ Apple ID／Google アカウントで）。1つのご契約で3台までご利用いただけます（30日以上使っていない端末は数えません）。</p>
       </div>
     </details>
-    <details>
+    <details id="faq-cancel">
       <summary>解約・返金はどうすればよいですか</summary>
       <div class="a">
         <p>解約は、各ストアのサブスクリプションの画面から行えます（iPhone は「設定」→ ご自身の名前 →「サブスクリプション」、Android は Google Play ストアの「お支払いと定期購入」→「定期購入」）。アプリを削除しても解約にはなりません。</p>
         <p>購入後のキャンセル・返金は、各ストアの規定によります。</p>
       </div>
     </details>
-    <details>
+    <details id="faq-time">
       <summary>時刻はどこの時間ですか</summary>
       <div class="a"><p>日本時間です。米国・欧州の夏時間の切り替え（米国は3月・11月、欧州は3月・10月）の前後で、日本時間で見た発表時刻が1時間ずれます。</p></div>
     </details>
-    <details>
+    <details id="faq-widget">
       <summary>ウィジェットの置き方は</summary>
       <div class="a"><p>iOS 17 以降で、アプリを一度開いたあと、ホーム画面を長押し →「編集」→「ウィジェットを追加」（iOS 17 では左上の「＋」）→「FXたより」を選びます。ロック画面には、ロック画面を長押し →「カスタマイズ」から置けます。表示されるのは、アプリが取り込んだ次の重要な発表と日時です。ウィジェット自体は通信しないため、予定を更新するにはアプリを開いてください。</p></div>
     </details>
-    <details>
+    <details id="faq-notify">
       <summary>通知が届きません</summary>
       <div class="a"><p>まずアプリの「設定」から<strong>テスト通知</strong>をお試しください。端末側で通知が許可されていない場合は、設定画面から端末の通知設定を開けます。アプリ 1.5.7 以降では、「設定」の<strong>通知の履歴（送信の記録）</strong>で、当方が送信の処理をしたかを確かめられます（届いたことの記録ではありません）。それでも届かない場合は、「設定」に表示される<strong>端末ID</strong>を添えて<a href="mailto:kainan0880jwr@gmail.com">ご連絡</a>ください。調査が早くなります。</p></div>
     </details>

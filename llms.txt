@@ -1,0 +1,34 @@
+# FXたより
+
+> 日本銀行・財務省・FRB・ECB などの中央銀行・政府機関の公式発表と、重要な経済指標の発表時刻を、選んだ通貨ペアに絞ってプッシュ通知でお知らせする iPhone アプリ（Android はテスト中）。情報提供のみで、投資助言・売買の推奨・相場の見通しは扱いません。
+
+- App Store での名前: FXたより 為替ニュース通知
+- 提供: IKD Studio（個人開発）
+- 対応: iPhone（iOS 15 以降。App Store ID 6809456671）。Android 版は Google Play でクローズドテスト中（テスター募集中）
+- 料金: 無料で使えます。任意の有料プラン「FXたより プラス」は月額300円（税込・自動更新。価格はストアの表示が正です）
+- アカウント登録なし・広告なし。氏名・メールアドレス・取引口座・資産の情報は集めません（Android 版のテストに参加するときの Google グループを除く）
+- 監視している発表元: 日本銀行・財務省・金融庁、FRB（報道発表・講演・議会証言）、欧州中央銀行（ECB）、イングランド銀行（発表・講演）、カナダ銀行、オーストラリア準備銀行
+- 経済指標: 日本・米国・英国・ユーロ圏・豪州・カナダの主要統計と、各国の中央銀行（ニュージーランド準備銀行を含む）の政策金利発表の日程。自動で取得できない一部の日程は、公表を確かめて人が載せています。米CPI・雇用統計、英CPI、ユーロ圏HICP、豪CPI、加CPI は発表後に「結果」と過去12回の範囲を表示します。市場予想（コンセンサス）は載せません
+- 通貨ペア: USD/JPY、EUR/USD、EUR/JPY、GBP/JPY、GBP/USD、AUD/JPY、AUD/USD、USD/CAD、NZD/JPY、NZD/USD（無料は3つまで、プラスは10すべて）
+- 発表前アラート: 重要度★★★の発表の前に。無料は選んだ通貨の1日1件まで（30分前）、プラスは監視中の通貨の30分前・5分前
+- 為替介入の記録: 財務省が公表した実績。無料は直近20件、プラスは1991年からすべて
+- しないこと: 投資助言・売買の推奨・相場の見通し・報道記事の転載・市場予想の掲載
+- 注意: 通知は遅れたり届かなかったりすることがあり、即時性・確実性は保証しません。各発表機関とは関係がなく、公式アプリではありません
+
+情報提供のみ／投資助言ではありません。言葉の意味と仕組みの説明で、相場の見通しや取引の方法は扱いません。公表元の定義や発表の方法は変わることがあります。最新の情報は各公表元でご確認ください。
+
+## ページ
+
+- [トップ（アプリの説明・料金・よくある質問）](https://kainan0880jwr.github.io/fxtayori/): できること・しないこと・料金表・FAQ
+- [経済指標の基本（13本）](https://kainan0880jwr.github.io/fxtayori/learn.html): 発表の時刻と日本時間、前回値の改定、前年比・前月比、中央銀行と政策金利、為替介入、市場の時間
+- [FX・経済指標の用語集（77語）](https://kainan0880jwr.github.io/fxtayori/glossary.html): pips・スプレッド・消費者物価指数・雇用統計・FOMC・政策金利・仲値など
+- [全文（読み物と用語集）](https://kainan0880jwr.github.io/fxtayori/llms-full.txt)
+- [App Store で入手（iPhone）](https://apps.apple.com/app/apple-store/id6809456671?pt=129108253&ct=llms&mt=8)
+- [Android 版のテストに参加する（Google Play での公開に向けたテスター募集）](https://kainan0880jwr.github.io/fxtayori/#android): Google グループ https://groups.google.com/g/fxtayori-testers に参加し、https://play.google.com/apps/testing/jp.fxtayori.app で「テスターになる」
+
+## Optional
+
+- [プライバシーポリシー](https://kainan0880jwr.github.io/fxtayori/privacy.html)
+- [利用規約](https://kainan0880jwr.github.io/fxtayori/terms.html)
+- [特定商取引法に基づく表示](https://kainan0880jwr.github.io/fxtayori/tokushoho.html)
+- [障害・誤った通知のときの対応](https://kainan0880jwr.github.io/fxtayori/incident.html)

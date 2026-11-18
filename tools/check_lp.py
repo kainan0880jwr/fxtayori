@@ -15,6 +15,8 @@
   6. incident.html の「現在のお知らせ」に最終更新の日付と、「掲載が無い＝障害が無い」と読ませない注記がある（2026-11-11）
   8. 読み物（learn.html）と用語集（glossary.html）の本数・語数が、トップの「新しく増えたこと」の数と同じ。
      JSON-LD の script 要素の中に「</」が無い（本文から script を閉じられない。2026-11-18 セキュリティ・法務・エンジニア）
+     手で書いた「基本（N本）」「用語集（N語）」（トップ・llms.txt）も同じ数。llms.txt にも 2 の言葉を使わない。
+     よくある質問と、その構造化データ（faq-ld）の質問が同じ
   7. 公開する HTML（旧版の規約を含むすべての *.html）と *.xml に HTML のコメントが無く、HTML の <style> に CSS のコメントが無い。
      ページのソースから誰でも読めるので、
      編集のメモは非公開の FXニュース/output/legal/lp_notes.md に書く（2026-11-16 全体レビュー UI/UX UX-G4）
@@ -22,7 +24,9 @@
 """
 import re
 import sys
+from html import unescape
 from html.parser import HTMLParser
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -80,6 +84,12 @@ def app_rows(dart_path: Path) -> list[str]:
     return re.findall(r"^\s*\('([^']+)',", m.group(1), re.M)
 
 
+def _text(h: str) -> str:
+    """タグとリンク先を除いた文（FAQ の比較用）"""
+    t = re.sub(r"<[^>]+>", "", h)
+    return re.sub(r"\s+", " ", unescape(t)).strip()
+
+
 def main() -> int:
     errors = []
     for name in PAGES:
@@ -115,6 +125,38 @@ def main() -> int:
         m = re.search(label + r"</a></b><span>(\d+)" + unit, index)
         if not m or int(m.group(1)) != n:
             errors.append(f"index.html: 「新しく増えたこと」の{label}の数が、生成したページ（{n}{unit}）と合わない")
+    # 手で書いた「基本（N本）」「用語集（N語）」も、トップ・llms.txt で生成したページと同じ数か
+    for name in ("index.html", "llms.txt", "llms-full.txt"):
+        text = (ROOT / name).read_text(encoding="utf-8")
+        for m in re.finditer(r"基本（(\d+)本）", text):
+            if int(m.group(1)) != n_primer:
+                errors.append(f"{name}: 「基本（{m.group(1)}本）」が生成したページ（{n_primer}本）と合わない")
+        for m in re.finditer(r"用語集（(\d+)語）", text):
+            if int(m.group(1)) != n_terms:
+                errors.append(f"{name}: 「用語集（{m.group(1)}語）」が生成したページ（{n_terms}語）と合わない")
+        if name.endswith(".txt"):
+            for pat, why in FORBIDDEN:
+                for hit in pat.finditer(text):
+                    errors.append(f"{name}: {why}: {hit.group(0)}")
+    # よくある質問の構造化データが、ページの質問と同じ数・同じ順か（build_learn_pages.py が作る）
+    sec = re.search(r'<section id="faq".*?</section>', index, re.S)
+    page_q = [(_text(q), _text(a)) for q, a in re.findall(
+        r'<details[^>]*>\s*<summary>(.*?)</summary>\s*<div class="a">(.*?)</div>\s*</details>', sec.group(0) if sec else "", re.S)]
+    ld = re.search(r'<script type="application/ld\+json" id="faq-ld">(.*?)</script>', index, re.S)
+    ld_q = []
+    if ld:
+        for e in json.loads(ld.group(1)).get("mainEntity", []):
+            ld_q.append((_text(e["name"]), _text(re.sub(r"（(?:https?|mailto):[^）]*）", "", e["acceptedAnswer"]["text"]))))
+    if not page_q or page_q != ld_q:
+        errors.append("index.html: よくある質問と構造化データ（faq-ld）の質問・答えが合わない。build_learn_pages.py で作り直す")
+    # llms*.txt のリンクは、このサイトと App Store・Google Play・テスターの Google グループだけ（改ざんで外への誘導を入れられないように。セキュリティ 🟡2）
+    allowed = ("https://kainan0880jwr.github.io/fxtayori/", "https://apps.apple.com/", "https://play.google.com/apps/testing/jp.fxtayori.app",
+               "https://groups.google.com/g/fxtayori-testers")
+    for name in ("llms.txt", "llms-full.txt"):
+        for u in re.findall(r"https?://[^\s)（）]+", (ROOT / name).read_text(encoding="utf-8")):
+            if not u.startswith(allowed):
+                errors.append(f"{name}: 許可していない URL: {u}")
+
     for page in sorted(ROOT.glob("*.html")):
         for sc in re.finditer(r"<script\b[^>]*>(.*?)</script>", page.read_text(encoding="utf-8"), re.S):
             if "</" in sc.group(1) or "<!--" in sc.group(1):
