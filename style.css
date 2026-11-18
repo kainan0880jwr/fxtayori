@@ -69,3 +69,14 @@ footer {
   font-size: 13px;
 }
 footer a { margin-right: 16px; }
+dl.terms { margin: 12px 0 24px; }
+dl.terms dt { font-weight: 700; margin-top: 20px; scroll-margin-top: 16px; }
+dl.terms dd { margin: 4px 0 0; font-size: 15px; }
+.reading { font-weight: 400; font-size: 13px; color: var(--muted); margin-left: 4px; }
+.aka { display: inline-block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+.checked { font-size: 13px; color: var(--muted); }
+h2[id] { scroll-margin-top: 16px; }
+header .app a { color: inherit; text-decoration: none; }
+header .app a.back { display: inline-block; min-height: 44px; line-height: 44px; font-size: 14px; color: var(--accent); }
+.app-line { font-size: 14px; }
+.app-line a { display: inline-block; margin-right: 12px; }

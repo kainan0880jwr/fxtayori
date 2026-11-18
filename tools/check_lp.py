@@ -13,6 +13,8 @@
   4. 料金表の行が、アプリのプラスの表（_featureTable の rows）の行をすべて含む
   5. 文書ページにも CSP・referrer の meta がある（incident.html を含む）
   6. incident.html の「現在のお知らせ」に最終更新の日付と、「掲載が無い＝障害が無い」と読ませない注記がある（2026-11-11）
+  8. 読み物（learn.html）と用語集（glossary.html）の本数・語数が、トップの「新しく増えたこと」の数と同じ。
+     JSON-LD の script 要素の中に「</」が無い（本文から script を閉じられない。2026-11-18 セキュリティ・法務・エンジニア）
   7. 公開する HTML（旧版の規約を含むすべての *.html）と *.xml に HTML のコメントが無く、HTML の <style> に CSS のコメントが無い。
      ページのソースから誰でも読めるので、
      編集のメモは非公開の FXニュース/output/legal/lp_notes.md に書く（2026-11-16 全体レビュー UI/UX UX-G4）
@@ -24,7 +26,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ["index.html", "privacy.html", "terms.html", "tokushoho.html", "incident.html"]
+PAGES = ["index.html", "privacy.html", "terms.html", "tokushoho.html", "incident.html", "learn.html", "glossary.html"]
 # incident.html に必ず残す言葉（お知らせが無いときの書き方。2026-11-11 法務レビュー）
 INCIDENT_REQUIRED = [
     ("最終更新", "「現在のお知らせ」に最終更新の日付が無い"),
@@ -103,6 +105,20 @@ def main() -> int:
         for pos in sorted(hits):
             line = text.count("\n", 0, pos) + 1
             errors.append(f"{page.name}:{line}: コメントを残さない（メモは FXニュース/output/legal/lp_notes.md に）")
+
+    index = (ROOT / "index.html").read_text(encoding="utf-8")
+    learn = (ROOT / "learn.html").read_text(encoding="utf-8")
+    glossary = (ROOT / "glossary.html").read_text(encoding="utf-8")
+    n_primer = len(re.findall(r'<section aria-labelledby="(?!cat-)', learn))
+    n_terms = len(re.findall(r"<dt id=", glossary))
+    for label, n, unit in (("はじめての経済指標", n_primer, "本の読み物"), ("用語集", n_terms, "語")):
+        m = re.search(label + r"</a></b><span>(\d+)" + unit, index)
+        if not m or int(m.group(1)) != n:
+            errors.append(f"index.html: 「新しく増えたこと」の{label}の数が、生成したページ（{n}{unit}）と合わない")
+    for page in sorted(ROOT.glob("*.html")):
+        for sc in re.finditer(r"<script\b[^>]*>(.*?)</script>", page.read_text(encoding="utf-8"), re.S):
+            if "</" in sc.group(1) or "<!--" in sc.group(1):
+                errors.append(f"{page.name}: script 要素の中に「</」か「<!--」がある（JSON-LD は < を \\u003c にする）")
 
     parser = PricingRows()
     parser.feed((ROOT / "index.html").read_text(encoding="utf-8"))
