@@ -92,7 +92,8 @@ def _text(h: str) -> str:
 
 def main() -> int:
     errors = []
-    for name in PAGES:
+    # ★旧版の規約（terms_*.html）にも「これは【効力発生日の前日】まで」の仮の文字を入れるので、同じ検査を通す（2026-11-19）
+    for name in [*PAGES, *sorted(x.name for x in ROOT.glob("terms_*.html"))]:
         text = (ROOT / name).read_text(encoding="utf-8")
         # 念のためコメントを除いてから見る（コメントそのものは下の 7 で止める）
         body = re.sub(r"<!--.*?-->", "", text, flags=re.S)
